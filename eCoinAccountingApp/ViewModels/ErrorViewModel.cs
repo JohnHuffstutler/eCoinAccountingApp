@@ -1,4 +1,4 @@
-namespace eCoinAccountingApp.Models
+namespace eCoinAccountingApp.ViewModels
 {
     public class ErrorViewModel
     {
