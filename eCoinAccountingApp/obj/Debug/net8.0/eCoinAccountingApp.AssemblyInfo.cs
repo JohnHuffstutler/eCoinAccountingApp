@@ -14,7 +14,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("eCoinAccountingApp")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+4d2d13cb611ca5d6f7e488b875ffaa29724e66a7")]
 [assembly: System.Reflection.AssemblyProductAttribute("eCoinAccountingApp")]
 [assembly: System.Reflection.AssemblyTitleAttribute("eCoinAccountingApp")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

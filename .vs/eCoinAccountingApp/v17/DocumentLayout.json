@@ -1,7 +1,64 @@
 {
   "Version": 1,
-  "WorkspaceRootPath": "C:\\Users\\reill\\OneDrive\\Desktop\\school\\eCoinAccountingApp\\",
-  "Documents": [],
+  "WorkspaceRootPath": "D:\\Code\\eCoinAccountingApp\\",
+  "Documents": [
+    {
+      "AbsoluteMoniker": "D:0:0:{A4AF0F93-3FE2-4060-B4F6-668260AE3F0D}|eCoinAccountingApp\\eCoinAccountingApp.csproj|d:\\code\\ecoinaccountingapp\\ecoinaccountingapp\\views\\shared\\error.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{A4AF0F93-3FE2-4060-B4F6-668260AE3F0D}|eCoinAccountingApp\\eCoinAccountingApp.csproj|solutionrelative:ecoinaccountingapp\\views\\shared\\error.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A4AF0F93-3FE2-4060-B4F6-668260AE3F0D}|eCoinAccountingApp\\eCoinAccountingApp.csproj|d:\\code\\ecoinaccountingapp\\ecoinaccountingapp\\viewmodels\\errorviewmodel.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{A4AF0F93-3FE2-4060-B4F6-668260AE3F0D}|eCoinAccountingApp\\eCoinAccountingApp.csproj|solutionrelative:ecoinaccountingapp\\viewmodels\\errorviewmodel.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A4AF0F93-3FE2-4060-B4F6-668260AE3F0D}|eCoinAccountingApp\\eCoinAccountingApp.csproj|d:\\code\\ecoinaccountingapp\\ecoinaccountingapp\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{A4AF0F93-3FE2-4060-B4F6-668260AE3F0D}|eCoinAccountingApp\\eCoinAccountingApp.csproj|solutionrelative:ecoinaccountingapp\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A4AF0F93-3FE2-4060-B4F6-668260AE3F0D}|eCoinAccountingApp\\eCoinAccountingApp.csproj|d:\\code\\ecoinaccountingapp\\ecoinaccountingapp\\controllers\\homecontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{A4AF0F93-3FE2-4060-B4F6-668260AE3F0D}|eCoinAccountingApp\\eCoinAccountingApp.csproj|solutionrelative:ecoinaccountingapp\\controllers\\homecontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A4AF0F93-3FE2-4060-B4F6-668260AE3F0D}|eCoinAccountingApp\\eCoinAccountingApp.csproj|d:\\code\\ecoinaccountingapp\\ecoinaccountingapp\\models\\applicationdbcontext.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{A4AF0F93-3FE2-4060-B4F6-668260AE3F0D}|eCoinAccountingApp\\eCoinAccountingApp.csproj|solutionrelative:ecoinaccountingapp\\models\\applicationdbcontext.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A4AF0F93-3FE2-4060-B4F6-668260AE3F0D}|eCoinAccountingApp\\eCoinAccountingApp.csproj|d:\\code\\ecoinaccountingapp\\ecoinaccountingapp\\properties\\launchsettings.json||{90A6B3A7-C1A3-4009-A288-E2FF89E96FA0}",
+      "RelativeMoniker": "D:0:0:{A4AF0F93-3FE2-4060-B4F6-668260AE3F0D}|eCoinAccountingApp\\eCoinAccountingApp.csproj|solutionrelative:ecoinaccountingapp\\properties\\launchsettings.json||{90A6B3A7-C1A3-4009-A288-E2FF89E96FA0}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A4AF0F93-3FE2-4060-B4F6-668260AE3F0D}|eCoinAccountingApp\\eCoinAccountingApp.csproj|D:\\Code\\eCoinAccountingApp\\ecoinaccountingapp\\views\\home\\index.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{A4AF0F93-3FE2-4060-B4F6-668260AE3F0D}|eCoinAccountingApp\\eCoinAccountingApp.csproj|solutionrelative:ecoinaccountingapp\\views\\home\\index.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A4AF0F93-3FE2-4060-B4F6-668260AE3F0D}|eCoinAccountingApp\\eCoinAccountingApp.csproj|d:\\code\\ecoinaccountingapp\\ecoinaccountingapp\\views\\shared\\_loginpartial.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{A4AF0F93-3FE2-4060-B4F6-668260AE3F0D}|eCoinAccountingApp\\eCoinAccountingApp.csproj|solutionrelative:ecoinaccountingapp\\views\\shared\\_loginpartial.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A4AF0F93-3FE2-4060-B4F6-668260AE3F0D}|eCoinAccountingApp\\eCoinAccountingApp.csproj|D:\\Code\\eCoinAccountingApp\\ecoinaccountingapp\\views\\shared\\_layout.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{A4AF0F93-3FE2-4060-B4F6-668260AE3F0D}|eCoinAccountingApp\\eCoinAccountingApp.csproj|solutionrelative:ecoinaccountingapp\\views\\shared\\_layout.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A4AF0F93-3FE2-4060-B4F6-668260AE3F0D}|eCoinAccountingApp\\eCoinAccountingApp.csproj|d:\\code\\ecoinaccountingapp\\ecoinaccountingapp\\controllers\\accountcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{A4AF0F93-3FE2-4060-B4F6-668260AE3F0D}|eCoinAccountingApp\\eCoinAccountingApp.csproj|solutionrelative:ecoinaccountingapp\\controllers\\accountcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A4AF0F93-3FE2-4060-B4F6-668260AE3F0D}|eCoinAccountingApp\\eCoinAccountingApp.csproj|d:\\code\\ecoinaccountingapp\\ecoinaccountingapp\\config\\identityconfig.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{A4AF0F93-3FE2-4060-B4F6-668260AE3F0D}|eCoinAccountingApp\\eCoinAccountingApp.csproj|solutionrelative:ecoinaccountingapp\\config\\identityconfig.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A4AF0F93-3FE2-4060-B4F6-668260AE3F0D}|eCoinAccountingApp\\eCoinAccountingApp.csproj|d:\\code\\ecoinaccountingapp\\ecoinaccountingapp\\viewmodels\\accountviewmodels.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{A4AF0F93-3FE2-4060-B4F6-668260AE3F0D}|eCoinAccountingApp\\eCoinAccountingApp.csproj|solutionrelative:ecoinaccountingapp\\viewmodels\\accountviewmodels.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A4AF0F93-3FE2-4060-B4F6-668260AE3F0D}|eCoinAccountingApp\\eCoinAccountingApp.csproj|d:\\code\\ecoinaccountingapp\\ecoinaccountingapp\\emailservicecredentials.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{A4AF0F93-3FE2-4060-B4F6-668260AE3F0D}|eCoinAccountingApp\\eCoinAccountingApp.csproj|solutionrelative:ecoinaccountingapp\\emailservicecredentials.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A4AF0F93-3FE2-4060-B4F6-668260AE3F0D}|eCoinAccountingApp\\eCoinAccountingApp.csproj|D:\\Code\\eCoinAccountingApp\\ecoinaccountingapp\\views\\shared\\_validationscriptspartial.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{A4AF0F93-3FE2-4060-B4F6-668260AE3F0D}|eCoinAccountingApp\\eCoinAccountingApp.csproj|solutionrelative:ecoinaccountingapp\\views\\shared\\_validationscriptspartial.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+    }
+  ],
   "DocumentGroupContainers": [
     {
       "Orientation": 0,
@@ -9,11 +66,229 @@
       "DocumentGroups": [
         {
           "DockedWidth": 200,
-          "SelectedChildIndex": -1,
+          "SelectedChildIndex": 10,
           "Children": [
             {
               "$type": "Bookmark",
-              "Name": "ST:0:0:{cce594b6-0c39-4442-ba28-10c64ac7e89f}"
+              "Name": "ST:130:0:{116d2292-e37d-41cd-a077-ebacac4c8cc4}"
+            },
+            {
+              "$type": "Bookmark",
+              "Name": "ST:133:0:{116d2292-e37d-41cd-a077-ebacac4c8cc4}"
+            },
+            {
+              "$type": "Bookmark",
+              "Name": "ST:134:0:{116d2292-e37d-41cd-a077-ebacac4c8cc4}"
+            },
+            {
+              "$type": "Bookmark",
+              "Name": "ST:135:0:{1fc202d4-d401-403c-9834-5b218574bb67}"
+            },
+            {
+              "$type": "Bookmark",
+              "Name": "ST:131:0:{1fc202d4-d401-403c-9834-5b218574bb67}"
+            },
+            {
+              "$type": "Bookmark",
+              "Name": "ST:132:0:{1fc202d4-d401-403c-9834-5b218574bb67}"
+            },
+            {
+              "$type": "Bookmark",
+              "Name": "ST:136:0:{1fc202d4-d401-403c-9834-5b218574bb67}"
+            },
+            {
+              "$type": "Bookmark",
+              "Name": "ST:137:0:{1fc202d4-d401-403c-9834-5b218574bb67}"
+            },
+            {
+              "$type": "Bookmark",
+              "Name": "ST:139:0:{1fc202d4-d401-403c-9834-5b218574bb67}"
+            },
+            {
+              "$type": "Bookmark",
+              "Name": "ST:138:0:{1fc202d4-d401-403c-9834-5b218574bb67}"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 0,
+              "Title": "Error.cshtml",
+              "DocumentMoniker": "D:\\Code\\eCoinAccountingApp\\eCoinAccountingApp\\Views\\Shared\\Error.cshtml",
+              "RelativeDocumentMoniker": "eCoinAccountingApp\\Views\\Shared\\Error.cshtml",
+              "ToolTip": "D:\\Code\\eCoinAccountingApp\\eCoinAccountingApp\\Views\\Shared\\Error.cshtml",
+              "RelativeToolTip": "eCoinAccountingApp\\Views\\Shared\\Error.cshtml",
+              "ViewState": "AQIAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
+              "WhenOpened": "2024-09-30T04:04:45.242Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 4,
+              "Title": "ApplicationDBContext.cs",
+              "DocumentMoniker": "D:\\Code\\eCoinAccountingApp\\eCoinAccountingApp\\Models\\ApplicationDBContext.cs",
+              "RelativeDocumentMoniker": "eCoinAccountingApp\\Models\\ApplicationDBContext.cs",
+              "ToolTip": "D:\\Code\\eCoinAccountingApp\\eCoinAccountingApp\\Models\\ApplicationDBContext.cs",
+              "RelativeToolTip": "eCoinAccountingApp\\Models\\ApplicationDBContext.cs",
+              "ViewState": "AQIAAAAAAAAAAAAAAAAAAAwAAAAFAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-09-30T04:02:25.85Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 5,
+              "Title": "launchSettings.json",
+              "DocumentMoniker": "D:\\Code\\eCoinAccountingApp\\eCoinAccountingApp\\Properties\\launchSettings.json",
+              "RelativeDocumentMoniker": "eCoinAccountingApp\\Properties\\launchSettings.json",
+              "ToolTip": "D:\\Code\\eCoinAccountingApp\\eCoinAccountingApp\\Properties\\launchSettings.json",
+              "RelativeToolTip": "eCoinAccountingApp\\Properties\\launchSettings.json",
+              "ViewState": "AQIAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001642|",
+              "WhenOpened": "2024-09-30T03:43:17.638Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 10,
+              "Title": "IdentityConfig.cs",
+              "DocumentMoniker": "D:\\Code\\eCoinAccountingApp\\eCoinAccountingApp\\Config\\IdentityConfig.cs",
+              "RelativeDocumentMoniker": "eCoinAccountingApp\\Config\\IdentityConfig.cs",
+              "ToolTip": "D:\\Code\\eCoinAccountingApp\\eCoinAccountingApp\\Config\\IdentityConfig.cs",
+              "RelativeToolTip": "eCoinAccountingApp\\Config\\IdentityConfig.cs",
+              "ViewState": "AQIAAAAAAAAAAAAAAAAAABUAAABHAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-09-30T03:37:36.513Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 1,
+              "Title": "ErrorViewModel.cs",
+              "DocumentMoniker": "D:\\Code\\eCoinAccountingApp\\eCoinAccountingApp\\ViewModels\\ErrorViewModel.cs",
+              "RelativeDocumentMoniker": "eCoinAccountingApp\\ViewModels\\ErrorViewModel.cs",
+              "ToolTip": "D:\\Code\\eCoinAccountingApp\\eCoinAccountingApp\\ViewModels\\ErrorViewModel.cs",
+              "RelativeToolTip": "eCoinAccountingApp\\ViewModels\\ErrorViewModel.cs",
+              "ViewState": "AQIAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-09-30T03:26:26.134Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 2,
+              "Title": "Program.cs",
+              "DocumentMoniker": "D:\\Code\\eCoinAccountingApp\\eCoinAccountingApp\\Program.cs",
+              "RelativeDocumentMoniker": "eCoinAccountingApp\\Program.cs",
+              "ToolTip": "D:\\Code\\eCoinAccountingApp\\eCoinAccountingApp\\Program.cs",
+              "RelativeToolTip": "eCoinAccountingApp\\Program.cs",
+              "ViewState": "AQIAAAAAAAAAAAAAAAAAAAIAAAAAAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-09-30T03:25:52.918Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 9,
+              "Title": "AccountController.cs",
+              "DocumentMoniker": "D:\\Code\\eCoinAccountingApp\\eCoinAccountingApp\\Controllers\\AccountController.cs",
+              "RelativeDocumentMoniker": "eCoinAccountingApp\\Controllers\\AccountController.cs",
+              "ToolTip": "D:\\Code\\eCoinAccountingApp\\eCoinAccountingApp\\Controllers\\AccountController.cs",
+              "RelativeToolTip": "eCoinAccountingApp\\Controllers\\AccountController.cs",
+              "ViewState": "AQIAAAAAAAAAAAAAAAAAAAMAAAAAAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-09-30T03:21:08.329Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 8,
+              "Title": "_Layout.cshtml",
+              "DocumentMoniker": "D:\\Code\\eCoinAccountingApp\\eCoinAccountingApp\\Views\\Shared\\_Layout.cshtml",
+              "RelativeDocumentMoniker": "eCoinAccountingApp\\Views\\Shared\\_Layout.cshtml",
+              "ToolTip": "D:\\Code\\eCoinAccountingApp\\eCoinAccountingApp\\Views\\Shared\\_Layout.cshtml",
+              "RelativeToolTip": "eCoinAccountingApp\\Views\\Shared\\_Layout.cshtml",
+              "ViewState": "AQIAAAAAAAAAAAAAAAAYwCIAAAAZAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
+              "WhenOpened": "2024-09-26T21:35:39.83Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 6,
+              "Title": "Index.cshtml",
+              "DocumentMoniker": "D:\\Code\\eCoinAccountingApp\\eCoinAccountingApp\\Views\\Home\\Index.cshtml",
+              "RelativeDocumentMoniker": "eCoinAccountingApp\\Views\\Home\\Index.cshtml",
+              "ToolTip": "D:\\Code\\eCoinAccountingApp\\eCoinAccountingApp\\Views\\Home\\Index.cshtml",
+              "RelativeToolTip": "eCoinAccountingApp\\Views\\Home\\Index.cshtml",
+              "ViewState": "AQIAAAAAAAAAAAAAAAAAABEAAAABAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
+              "WhenOpened": "2024-09-26T21:34:16.17Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 7,
+              "Title": "_LoginPartial.cshtml",
+              "DocumentMoniker": "D:\\Code\\eCoinAccountingApp\\eCoinAccountingApp\\Views\\Shared\\_LoginPartial.cshtml",
+              "RelativeDocumentMoniker": "eCoinAccountingApp\\Views\\Shared\\_LoginPartial.cshtml",
+              "ToolTip": "D:\\Code\\eCoinAccountingApp\\eCoinAccountingApp\\Views\\Shared\\_LoginPartial.cshtml",
+              "RelativeToolTip": "eCoinAccountingApp\\Views\\Shared\\_LoginPartial.cshtml",
+              "ViewState": "AQIAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
+              "WhenOpened": "2024-09-30T03:54:44.441Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 3,
+              "Title": "HomeController.cs",
+              "DocumentMoniker": "D:\\Code\\eCoinAccountingApp\\eCoinAccountingApp\\Controllers\\HomeController.cs",
+              "RelativeDocumentMoniker": "eCoinAccountingApp\\Controllers\\HomeController.cs",
+              "ToolTip": "D:\\Code\\eCoinAccountingApp\\eCoinAccountingApp\\Controllers\\HomeController.cs",
+              "RelativeToolTip": "eCoinAccountingApp\\Controllers\\HomeController.cs",
+              "ViewState": "AQIAAA0AAAAAAAAAAAAgwAgAAAAFAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-09-26T21:35:45.917Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 12,
+              "Title": "EmailServiceCredentials.cs",
+              "DocumentMoniker": "D:\\Code\\eCoinAccountingApp\\eCoinAccountingApp\\EmailServiceCredentials.cs",
+              "RelativeDocumentMoniker": "eCoinAccountingApp\\EmailServiceCredentials.cs",
+              "ToolTip": "D:\\Code\\eCoinAccountingApp\\eCoinAccountingApp\\EmailServiceCredentials.cs",
+              "RelativeToolTip": "eCoinAccountingApp\\EmailServiceCredentials.cs",
+              "ViewState": "AQIAAAwAAAAAAAAAAAAmwB8AAAAxAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-09-30T03:39:47.999Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 11,
+              "Title": "AccountViewModels.cs",
+              "DocumentMoniker": "D:\\Code\\eCoinAccountingApp\\eCoinAccountingApp\\ViewModels\\AccountViewModels.cs",
+              "RelativeDocumentMoniker": "eCoinAccountingApp\\ViewModels\\AccountViewModels.cs",
+              "ToolTip": "D:\\Code\\eCoinAccountingApp\\eCoinAccountingApp\\ViewModels\\AccountViewModels.cs",
+              "RelativeToolTip": "eCoinAccountingApp\\ViewModels\\AccountViewModels.cs",
+              "ViewState": "AQIAAAYAAAAAAAAAAAAAwBUAAAAsAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-09-30T03:46:41.454Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 13,
+              "Title": "_ValidationScriptsPartial.cshtml",
+              "DocumentMoniker": "D:\\Code\\eCoinAccountingApp\\eCoinAccountingApp\\Views\\Shared\\_ValidationScriptsPartial.cshtml",
+              "RelativeDocumentMoniker": "eCoinAccountingApp\\Views\\Shared\\_ValidationScriptsPartial.cshtml",
+              "ToolTip": "D:\\Code\\eCoinAccountingApp\\eCoinAccountingApp\\Views\\Shared\\_ValidationScriptsPartial.cshtml",
+              "RelativeToolTip": "eCoinAccountingApp\\Views\\Shared\\_ValidationScriptsPartial.cshtml",
+              "ViewState": "AQIAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
+              "WhenOpened": "2024-09-26T21:35:41.083Z",
+              "EditorCaption": ""
             }
           ]
         }
