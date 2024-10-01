@@ -1,0 +1,15 @@
+# Ignore Visual Studio specific directories and files
+.vs/
+*.suo
+
+# Ignore build results
+bin/
+obj/
+
+# Ignore executables
+*.exe
+
+# Ignore package manager files (optional, but recommended if you use package management)
+project.lock.json
+project.fragment.lock.json
+project.assets.json
