@@ -1,0 +1,78 @@
+﻿@page
+@model eCoinAccountingApp.Pages.User.EditModel
+@{
+}
+
+<h2>Edit User</h2>
+
+@if(Model.errorMessage.Length > 0)
+{
+    <div class="alert alert-warning alert-dismissible fade show" role="alert">
+        <strong>@Model.errorMessage</strong>
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="close"></button>
+    </div>
+}
+@if (Model.successMessage.Length > 0)
+{
+    <div class="alert alert-success alert-dismissible fade show" role="alert">
+        <strong>@Model.successMessage</strong>
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="close"></button>
+    </div>
+}
+
+<form method="POST">
+    <div class="row mb-3">
+        <label class="col-sm-3 col-form-label">First Name</label>
+        <div class="col-sm-6">
+            <input type="text" class="form-control" name="FirstName" value="@Model.user.firstName" />
+        </div>
+    </div>
+    <div class="row mb-3">
+        <label class="col-sm-3 col-form-label">Last Name</label>
+        <div class="col-sm-6">
+            <input type="text" class="form-control" name="LastName" value="@Model.user.lastName" />
+        </div>
+    </div>
+    <div class="row mb-3">
+        <label class="col-sm-3 col-form-label">Username</label>
+        <div class="col-sm-6">
+            <input type="text" class="form-control" name="Username" value="@Model.user.userName" />
+        </div>
+    </div>
+    <div class="row mb-3">
+        <label class="col-sm-3 col-form-label">Password</label>
+        <div class="col-sm-6">
+            <input type="text" class="form-control" name="Password" value="@Model.user.password" />
+        </div>
+    </div>
+    <div class="row mb-3">
+        <label class="col-sm-3 col-form-label">Role</label>
+        <div class="col-sm-6">
+            <input type="text" class="form-control" name="Role" value="@Model.user.role" />
+        </div>
+    </div>
+    <div class="row mb-3">
+        <label class="col-sm-3 col-form-label">Email</label>
+        <div class="col-sm-6">
+            <input type="string" class="form-control" name="Email" value="@Model.user.email" />
+        </div>
+    </div>
+    <div class="row mb-3">
+        <label class="col-sm-3 col-form-label">Address</label>
+        <div class="col-sm-6">
+            <input type="text" class="form-control" name="Address" value="@Model.user.address" />
+        </div>
+    </div>
+    <div class="row mb-3">
+        <label class="col-sm-3 col-form-label">Date Of Birth</label>
+        <div class="col-sm-6">
+            <input type="text" class="form-control" name="DateOfBirth" value="@Model.user.dateOfBirth" />
+        </div>
+    </div>
+    <div class="row mb-3">
+        <div class="offset-sm-3 col-sm-3 g-grid">
+            <button type="submit" class="btn btn-primary">Submit</button> &nbsp;
+            <button type="submit" class="btn btn-primary">Cancel</button>
+        </div>
+    </div>
+</form>

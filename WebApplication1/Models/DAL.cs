@@ -20,9 +20,10 @@ namespace eCoinAccountingApp.Models
                     {
                         Users user = new Users();
                         user.id = Convert.ToString(dt.Rows[i]["Id"]);
-                        user.userName = Convert.ToString(dt.Rows[i]["Username"]);
                         user.firstName = Convert.ToString(dt.Rows[i]["First Name"]);
                         user.lastName = Convert.ToString(dt.Rows[i]["Last Name"]);
+                        user.userName = Convert.ToString(dt.Rows[i]["Username"]);
+                        user.password = Convert.ToString(dt.Rows[i]["Password"]);                   
                         user.role = Convert.ToString(dt.Rows[i]["Role"]);
                         user.email = Convert.ToString(dt.Rows[i]["Email"]);
                         user.address = Convert.ToString(dt.Rows[i]["Address"]);
@@ -33,6 +34,45 @@ namespace eCoinAccountingApp.Models
             }
 
             return listUsers;
+        }
+
+        public int AddUser(Users user, IConfiguration config)
+        {
+            int i = 0;
+            using (SqlConnection connection = new SqlConnection(config.GetConnectionString("DefaultConnection").ToString()))
+            {
+                SqlCommand cmd = new SqlCommand("INSERT INTO [Table] ([First Name],[Last Name],Username,Password,Role,Email,Address,[Date Of Birth]) VALUES('" + user.firstName + "' , '" + user.lastName + "' , '" + user.userName + "' , '" + user.password + "' , '" + user.role + "' , '" + user.email + "' , '" + user.address + "' , '" + user.dateOfBirth + "')", connection);
+                connection.Open();
+                i = cmd.ExecuteNonQuery();
+                connection.Close();
+            }
+            return i;
+        }
+
+        public Users GetUser(string id, IConfiguration config)
+        {
+            Users user = new Users();
+            using (SqlConnection connection = new SqlConnection(config.GetConnectionString("DefaultConnection").ToString()))
+            {
+                SqlDataAdapter da = new SqlDataAdapter("SELECT * FROM [Table] WHERE Id = '" + id + "' ", connection);
+                DataTable dt = new DataTable();
+                da.Fill(dt);
+
+                if (dt.Rows.Count > 0)
+                {
+                        user.id = Convert.ToString(dt.Rows[0]["Id"]);
+                        user.firstName = Convert.ToString(dt.Rows[0]["First Name"]);
+                        user.lastName = Convert.ToString(dt.Rows[0]["Last Name"]);
+                        user.userName = Convert.ToString(dt.Rows[0]["Username"]);
+                        user.password = Convert.ToString(dt.Rows[0]["Password"]);
+                        user.role = Convert.ToString(dt.Rows[0]["Role"]);
+                        user.email = Convert.ToString(dt.Rows[0]["Email"]);
+                        user.address = Convert.ToString(dt.Rows[0]["Address"]);
+                        user.dateOfBirth = Convert.ToString(dt.Rows[0]["Date Of Birth"]);
+                }
+            }
+
+            return user;
         }
     }
 }
