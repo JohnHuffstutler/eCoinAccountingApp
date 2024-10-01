@@ -8,5 +8,6 @@ namespace eCoinAccountingApp.Data
         public string LastName { get; set; }
         public DateTime DateOfBirth { get; set; }
         public string Address { get; set; }
+        public DateTime? PasswordExpirationDate { get; set; }
     }
 }

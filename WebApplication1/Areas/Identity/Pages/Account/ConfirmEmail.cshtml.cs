@@ -12,16 +12,20 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.WebUtilities;
 using eCoinAccountingApp.Data;
+using Microsoft.AspNetCore.Identity.UI.Services;
+using System.Text.Encodings.Web;
 
 namespace eCoinAccountingApp.Areas.Identity.Pages.Account
 {
     public class ConfirmEmailModel : PageModel
     {
         private readonly UserManager<ApplicationUser> _userManager;
-            
-        public ConfirmEmailModel(UserManager<ApplicationUser> userManager)
+        private readonly IEmailSender _emailSender;
+
+        public ConfirmEmailModel(UserManager<ApplicationUser> userManager, IEmailSender emailSender)
         {
             _userManager = userManager;
+            _emailSender = emailSender;
         }
 
         /// <summary>
@@ -45,7 +49,15 @@ namespace eCoinAccountingApp.Areas.Identity.Pages.Account
 
             code = Encoding.UTF8.GetString(WebEncoders.Base64UrlDecode(code));
             var result = await _userManager.ConfirmEmailAsync(user, code);
-            StatusMessage = result.Succeeded ? "Thank you for confirming your email." : "Error confirming your email.";
+            StatusMessage = result.Succeeded ? "User has been added" : "Error confirming your email.";
+            if (result.Succeeded)
+            {
+                var loginUrl = Url.Page("/Account/Login", pageHandler: null, values: null, protocol: Request.Scheme);
+                await _emailSender.SendEmailAsync(
+                    user.Email,
+                    "Email Confirmation Successful",
+                    $"Dear {user.FirstName},<br/>Your email has been successfully confirmed. You can now log in to your account with the following username: {user.UserName} by <a href='{HtmlEncoder.Default.Encode(loginUrl)}'>clicking here</a>.");
+            }
             return Page();
         }
     }
