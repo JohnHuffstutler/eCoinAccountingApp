@@ -25,24 +25,35 @@
         @{
             foreach(var item in Model.listUsers)
             {
-                <tr>
-                <td>@item.id</td>
-                <td>@item.firstName</td>
-                <td>@item.lastName</td>
-                <td>@item.userName</td>
-                <td>@item.password</td>
-                <td>@item.role</td>
-                <td>@item.email</td>
-                <td>@item.address</td>
-                <td>@item.dateOfBirth</td>
-                <td>
-                    <a href="/User"/Edit?id="@item.id" class="btn btn-primary">Edit</a>
-                </td>
-                 <td>
-                    <a href="/User"/Delete?id="@item.id" class="btn btn-danger">Delete</a>
-                 </td>
-                </tr>
+                    <tr>
+                    <td>@item.id</td>
+                    <td>@item.firstName</td>
+                    <td>@item.lastName</td>
+                    <td>@item.userName</td>
+                    <td>@item.password</td>
+                    <td>@item.role</td>
+                    <td>@item.email</td>
+                    <td>@item.address</td>
+                    <td>@item.dateOfBirth</td>
+                    <td>
+                            <a href="/User/Edit?id=@item.id" class="btn btn-primary">Edit</a>
+                    </td>
+                     <td>
+                            <a onclick="return onDelete(@item.id)" class="btn btn-danger">Delete</a>
+                     </td>
+                    </tr>
             }
         }
     </tbody>
 </table>
+
+<script>
+    function onDelete(id) {
+        if (window.confirm("Are you sure to delete the record?")) 
+        {
+            window.location.href = "/User/Delete?id=" + id;
+        }
+    }
+</script>
+
+

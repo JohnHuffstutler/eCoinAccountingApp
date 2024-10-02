@@ -74,5 +74,31 @@ namespace eCoinAccountingApp.Models
 
             return user;
         }
+
+        public int UpdateUser(Users user, IConfiguration config)
+        {
+            int i = 0;
+            using (SqlConnection connection = new SqlConnection(config.GetConnectionString("DefaultConnection").ToString()))
+            {
+                SqlCommand cmd = new SqlCommand("UPDATE [Table] SET [First Name] = '" + user.firstName + "' ,[Last Name] = '" + user.lastName + "' ,Username = '" + user.userName + "' ,Password = '" + user.password + "' ,Role = '" + user.role + "' ,Email = '" + user.email + "' ,Address = '" + user.address + "' ,[Date Of Birth] = '" + user.dateOfBirth + "' WHERE Id = '" + user.id + "' ", connection);
+                connection.Open();
+                i = cmd.ExecuteNonQuery();
+                connection.Close();
+            }
+            return i;
+        }
+
+        public int DeleteUser(string id, IConfiguration config)
+        {
+            int i = 0;
+            using (SqlConnection connection = new SqlConnection(config.GetConnectionString("DefaultConnection").ToString()))
+            {
+                SqlCommand cmd = new SqlCommand("DELETE FROM [Table] WHERE Id = '" + id + "' ", connection);
+                connection.Open();
+                i = cmd.ExecuteNonQuery();
+                connection.Close();
+            }
+            return i;
+        }
     }
 }

@@ -1,0 +1,20 @@
+﻿@page
+@using System.Data.SqlClient;
+@using Microsoft.Extensions.Configuration
+@using eCoinAccountingApp.Models;
+@inject IConfiguration config;
+
+@{
+    try
+    {
+        DAL dal = new DAL();
+        string id = Request.Query["id"];
+        dal.DeleteUser(id, config);
+    }
+    catch (Exception ex)
+    {
+
+    }
+
+    Response.Redirect("/User/Index");
+}

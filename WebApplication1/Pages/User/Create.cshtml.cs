@@ -21,6 +21,7 @@ namespace eCoinAccountingApp.Pages.User
 
         public void OnPost()
         {
+            user.id = Request.Form["hiddenId"];
             user.firstName = Request.Form["FirstName"];
             user.lastName = Request.Form["LastName"];
             user.userName = Request.Form["Username"];
