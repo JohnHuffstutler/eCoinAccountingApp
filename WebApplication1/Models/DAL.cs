@@ -10,7 +10,7 @@ namespace eCoinAccountingApp.Models
             List<Users> listUsers = new List<Users>();
             using (SqlConnection connection = new SqlConnection(config.GetConnectionString("DefaultConnection").ToString()))
             {
-                SqlDataAdapter da = new SqlDataAdapter("SELECT * FROM [Table]", connection);
+                SqlDataAdapter da = new SqlDataAdapter("SELECT * FROM [AspNetUsers]", connection);
                 DataTable dt = new DataTable();
                 da.Fill(dt);
 
@@ -20,14 +20,14 @@ namespace eCoinAccountingApp.Models
                     {
                         Users user = new Users();
                         user.id = Convert.ToString(dt.Rows[i]["Id"]);
-                        user.firstName = Convert.ToString(dt.Rows[i]["First Name"]);
-                        user.lastName = Convert.ToString(dt.Rows[i]["Last Name"]);
-                        user.userName = Convert.ToString(dt.Rows[i]["Username"]);
-                        user.password = Convert.ToString(dt.Rows[i]["Password"]);                   
-                        user.role = Convert.ToString(dt.Rows[i]["Role"]);
+                        user.firstName = Convert.ToString(dt.Rows[i]["FirstName"]);
+                        user.lastName = Convert.ToString(dt.Rows[i]["LastName"]);
+                        user.userName = Convert.ToString(dt.Rows[i]["UserName"]);
+                        user.password = Convert.ToString(dt.Rows[i]["PasswordHash"]);
+                        user.role = "test"; // Convert.ToString(dt.Rows[i]["Role"]);
                         user.email = Convert.ToString(dt.Rows[i]["Email"]);
                         user.address = Convert.ToString(dt.Rows[i]["Address"]);
-                        user.dateOfBirth = Convert.ToString(dt.Rows[i]["Date Of Birth"]);
+                        user.dateOfBirth = Convert.ToString(dt.Rows[i]["DateOfBirth"]);
                         listUsers.Add(user);
                     }
                 }
