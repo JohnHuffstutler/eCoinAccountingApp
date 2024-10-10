@@ -121,6 +121,15 @@ namespace eCoinAccountingApp.Areas.Identity.Pages.Account
                 {
                     _logger.LogInformation("User created a new account with password.");
 
+                    var usersCount = _userManager.Users.Count();
+                    if (usersCount == 1)
+                    {
+                        await _userManager.AddToRoleAsync(user, "Admin");
+                    }
+                    else
+                    {
+                        await _userManager.AddToRoleAsync(user, "User");
+                    }
                     var passwordHistory = new PasswordHistory
                     {
                         UserId = user.Id,
@@ -130,6 +139,7 @@ namespace eCoinAccountingApp.Areas.Identity.Pages.Account
 
                     _context.PasswordHistories.Add(passwordHistory);
                     await _context.SaveChangesAsync();
+
 
                     var userId = await _userManager.GetUserIdAsync(user);
                     var code = await _userManager.GenerateEmailConfirmationTokenAsync(user);

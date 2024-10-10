@@ -1,0 +1,59 @@
+﻿@page
+@model eCoinAccountingApp.Pages.User.IndexModel
+@{
+}
+
+<a href="/User/Create" class="btn btn-primary">Create</a>
+<br />
+<table class="table table-hover">
+    <thead>
+        <tr>
+            <td>ID</td>
+            <td>First Name</td>
+            <td>Last Name</td>
+            <td>Username</td>
+            <td>Password</td>
+            <td>Role</td>
+            <td>Email</td>
+            <td>Address</td>
+            <td>Date Of Birth</td>
+            <td>Edit</td>
+            <td>Delete</td>
+        </tr>
+    </thead>
+    <tbody>
+        @{
+            foreach(var item in Model.listUsers)
+            {
+                    <tr>
+                    <td>@item.id</td>
+                    <td>@item.firstName</td>
+                    <td>@item.lastName</td>
+                    <td>@item.userName</td>
+                    <td>@item.password</td>
+                    <td>@item.role</td>
+                    <td>@item.email</td>
+                    <td>@item.address</td>
+                    <td>@item.dateOfBirth</td>
+                    <td>
+                            <a href="/User/Edit?id=@item.id" class="btn btn-primary">Edit</a>
+                    </td>
+                     <td>
+                            <a onclick="return onDelete(@item.id)" class="btn btn-danger">Delete</a>
+                     </td>
+                    </tr>
+            }
+        }
+    </tbody>
+</table>
+
+<script>
+    function onDelete(id) {
+        if (window.confirm("Are you sure to delete the record?")) 
+        {
+            window.location.href = "/User/Delete?id=" + id;
+        }
+    }
+</script>
+
+
