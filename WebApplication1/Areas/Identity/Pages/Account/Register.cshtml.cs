@@ -22,6 +22,7 @@ namespace eCoinAccountingApp.Areas.Identity.Pages.Account
         private readonly IUserEmailStore<ApplicationUser> _emailStore;
         private readonly ILogger<RegisterModel> _logger;
         private readonly IEmailSender _emailSender;
+        private readonly ApplicationDbContext _context;
         private IUserEmailStore<ApplicationUser> GetEmailStore()
         {
             if (!_userManager.SupportsUserEmail)
@@ -36,7 +37,8 @@ namespace eCoinAccountingApp.Areas.Identity.Pages.Account
             IUserStore<ApplicationUser> userStore,
             SignInManager<ApplicationUser> signInManager,
             ILogger<RegisterModel> logger,
-            IEmailSender emailSender)
+            IEmailSender emailSender,
+            ApplicationDbContext context)
         {
             _userManager = userManager;
             _userStore = userStore;
@@ -44,6 +46,7 @@ namespace eCoinAccountingApp.Areas.Identity.Pages.Account
             _signInManager = signInManager;
             _logger = logger;
             _emailSender = emailSender;
+            _context = context;
         }
 
         [BindProperty]
@@ -61,7 +64,7 @@ namespace eCoinAccountingApp.Areas.Identity.Pages.Account
             public string Email { get; set; }
 
             [Required]
-            [StringLength(100, ErrorMessage = "The {0} must be at least {2} and at max {1} characters long.", MinimumLength = 6)]
+            [StringLength(100, ErrorMessage = "The {0} must be at least {2} and at max {1} characters long.", MinimumLength = 8)]
             [DataType(DataType.Password)]
             [Display(Name = "Password")]
             public string Password { get; set; }
@@ -102,13 +105,15 @@ namespace eCoinAccountingApp.Areas.Identity.Pages.Account
             {
                 var user = CreateUser();
 
-                await _userStore.SetUserNameAsync(user, Input.Email, CancellationToken.None);
+                string username = $"{Input.FirstName[0]}{Input.LastName}{DateTime.Now:MMdd}";
+                await _userStore.SetUserNameAsync(user, username, CancellationToken.None);
                 await _emailStore.SetEmailAsync(user, Input.Email, CancellationToken.None);
 
                 user.FirstName = Input.FirstName; 
                 user.LastName = Input.LastName;  
                 user.DateOfBirth = Input.DateOfBirth;
                 user.Address = Input.Address;
+                user.PasswordExpirationDate = DateTime.UtcNow.AddDays(90);
 
                 var result = await _userManager.CreateAsync(user, Input.Password);
 
@@ -125,6 +130,16 @@ namespace eCoinAccountingApp.Areas.Identity.Pages.Account
                     {
                         await _userManager.AddToRoleAsync(user, "User");
                     }
+                    var passwordHistory = new PasswordHistory
+                    {
+                        UserId = user.Id,
+                        HashedPassword = _userManager.PasswordHasher.HashPassword(user, Input.Password),
+                        ChangedDate = DateTime.UtcNow 
+                    };
+
+                    _context.PasswordHistories.Add(passwordHistory);
+                    await _context.SaveChangesAsync();
+
 
                     var userId = await _userManager.GetUserIdAsync(user);
                     var code = await _userManager.GenerateEmailConfirmationTokenAsync(user);
@@ -135,8 +150,8 @@ namespace eCoinAccountingApp.Areas.Identity.Pages.Account
                         values: new { area = "Identity", userId = userId, code = code, returnUrl = returnUrl },
                         protocol: Request.Scheme);
 
-                    await _emailSender.SendEmailAsync(Input.Email, "Confirm your email",
-                        $"Please confirm your account by <a href='{HtmlEncoder.Default.Encode(callbackUrl)}'>clicking here</a>.");
+                    await _emailSender.SendEmailAsync("johnhuffstutlertest@gmail.com", "The user " +user.FirstName+" "+ user.LastName + " has registered to make an account.",
+                        $"Please confirm the account by <a href='{HtmlEncoder.Default.Encode(callbackUrl)}'>clicking here</a>.");
 
                     if (_userManager.Options.SignIn.RequireConfirmedAccount)
                     {
