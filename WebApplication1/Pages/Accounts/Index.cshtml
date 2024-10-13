@@ -16,8 +16,12 @@
 
 @if (isAdmin)
 {
-    <a href="/Accounts/Create" class="btn btn-primary">Create Account</a>
-    <a href="/Companies/Create" class="btn btn-primary">Create Company</a>
+    <span class="tt" data-bs-placement="bottom" title="Add a new account to the chart of accounts.">
+        <a href="/Accounts/Create" class="btn btn-primary">Create Account</a>
+    </span>
+    <span class="tt" data-bs-placement="bottom" title="Add a new company to the chart of accounts.">
+        <a href="/Companies/Create" class="btn btn-primary">Create Company</a>
+    </span>
 }
 
 <br />
@@ -98,10 +102,16 @@
 
                     @if (isAdmin)
                     {
-                        <td><a href="/Accounts/Edit/@account.Id" class="btn btn-primary">Edit</a></td>
+                        <td>
+                            <span class="tt" data-bs-placement="bottom" title="Make changes to account.">
+                                <a href="/Accounts/Edit/@account.Id" class="btn btn-primary">Edit</a>
+                            </span>
+                        </td>
                         <td>
                             <form method="post" asp-page-handler="Delete" asp-route-id="@account.Id" style="display:inline;" onsubmit="return confirmDelete();">
-                                <button type="submit" class="btn btn-danger">Deactivate</button>
+                                <span class="tt" data-bs-placement="bottom" title="Deactivate account.">
+                                    <button type="submit" class="btn btn-danger">Deactivate</button>
+                                </span>
                             </form>
                         </td>
                     }

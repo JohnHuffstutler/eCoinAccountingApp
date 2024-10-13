@@ -3,7 +3,9 @@
 @{
 }
 
-<a href="/User/Create" class="btn btn-primary">Create</a>
+<span class="tt" data-bs-placement="bottom" title="Add a new user to the database.">
+    <a href="/User/Create" class="btn btn-primary">Create</a>
+</span>
 <br />
 <table class="table table-hover">
     <thead>
@@ -36,11 +38,15 @@
                     <td>@item.address</td>
                     <td>@item.dateOfBirth</td>
                     <td>
+                        <span class="tt" data-bs-placement="bottom" title="Edit user.">
                             <a href="/User/Edit?id=@item.id" class="btn btn-primary">Edit</a>
+                        </span>
                     </td>
-                     <td>
+                    <td>
+                         <span class="tt" data-bs-placement="bottom" title="Delete user from database.">
                             <a onclick="return onDelete(@item.id)" class="btn btn-danger">Delete</a>
-                     </td>
+                         </span>
+                    </td>
                     </tr>
             }
         }
