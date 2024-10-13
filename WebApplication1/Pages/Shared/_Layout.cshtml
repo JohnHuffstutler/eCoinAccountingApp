@@ -1,4 +1,8 @@
-﻿<!DOCTYPE html>
+﻿@using Microsoft.AspNetCore.Identity
+@inject UserManager<ApplicationUser> UserManager
+@inject SignInManager<ApplicationUser> SignInManager
+
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="utf-8" />
@@ -8,34 +12,63 @@
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/eCoinAccountingApp.styles.css" asp-append-version="true" />
 </head>
-<body>
+<body style="background-color: #dce4ec; font-family: Georgia, 'Times New Roman', Times, serif;">
     <header>
-        <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
-            <div class="container">
-                <img src="/ecoin_logo.png" style="width: 50px; height: 50px;" />
-
-                <a class="navbar-brand" asp-area="" asp-page="/Index">eCoinAccountingApp</a>
+        <nav class="navbar navbar-expand-sm bg-body-tertiary">
+            <div class="container-fluid">
+                <!-- Logo and App Name -->
                 <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse" aria-controls="navbarSupportedContent"
                         aria-expanded="false" aria-label="Toggle navigation">
                     <span class="navbar-toggler-icon"></span>
                 </button>
+
                 <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
-                    <ul class="navbar-nav flex-grow-1">
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-page="/Index">Home</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-page="/Privacy">Privacy</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-page="/User/Index">User Management</a>
-                        </li>
-                    </ul>
-                    <partial name="_LoginPartial" />
+                    <div class="col d-flex flex-column justify-content-center align-items-center">
+                        <ul class="navbar-nav me-auto">
+                            <!-- Logo and Brand -->
+                            <div class="d-flex align-items-center mt-1" style="min-height: 80px;">
+                                <h1 class="navbar-brand d-flex align-items-center">
+                                    <img src="/ecoin_logo.png" alt="Ecoin Logo" style="width: 50px; height: 50px;" />
+                                    <span class="nav-link" style="font-size: x-large;">eCoinAccounting</span>
+                                </h1>
+                            </div>
+
+                            <!-- Home -->
+                            <div class="d-flex align-items-center" style="min-height: 80px;">
+                                <a class="nav-link" asp-area="" asp-page="/Index" style="font-size: x-large;">Home</a>
+                            </div>
+
+                            <!-- Chart of Accounts -->
+                            <div class="d-flex align-items-center" style="min-height: 80px;">
+                                <a class="nav-link" asp-area="" asp-page="/Accounts/Index" style="font-size: x-large;">Chart of Accounts</a>
+                            </div>
+
+                            <!-- Conditionally Render for Admins -->
+                            @if (SignInManager.IsSignedIn(User))
+                            {
+                                var currentUser = await UserManager.GetUserAsync(User);
+                                if (currentUser != null && currentUser.Role == "Admin")
+                                {
+                                    <!-- User Management (Admins Only) -->
+                                    <div class="d-flex align-items-center" style="min-height: 80px;">
+                                        <a class="nav-link" asp-area="" asp-page="/User/Index" style="font-size: x-large;">User Management</a>
+                                    </div>
+
+                                    <!-- Event Log (Admins Only) -->
+                                    <div class="d-flex align-items-center" style="min-height: 80px;">
+                                        <a class="nav-link" href="#" style="font-size: x-large;">Event Log</a>
+                                    </div>
+                                }
+                            }
+                        </ul>
+                    </div>
                 </div>
+
+                <partial name="_LoginPartial" />
             </div>
         </nav>
     </header>
+
     <div class="container">
         <main role="main" class="pb-3">
             @RenderBody()

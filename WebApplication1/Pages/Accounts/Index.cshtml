@@ -1,0 +1,116 @@
+﻿@page
+@model eCoinAccountingApp.Pages.Account.IndexModel
+@using Microsoft.AspNetCore.Identity
+@inject UserManager<ApplicationUser> UserManager
+@inject SignInManager<ApplicationUser> SignInManager
+
+@{
+    var currentUser = await UserManager.GetUserAsync(User);
+    var isAdmin = SignInManager.IsSignedIn(User) && currentUser.Role == "Admin";
+}
+
+<h1>User Type: @currentUser.Role</h1>
+
+@if (isAdmin)
+{
+    <a href="/Accounts/Create" class="btn btn-primary">Create Account</a>
+    <a href="/Companies/Create" class="btn btn-primary">Create Company</a>
+}
+
+<br />
+
+<!-- Company Selection Dropdown -->
+<form method="get">
+    <div class="form-group">
+        <label for="SelectedCompanyId">Select Company:</label>
+        <select id="SelectedCompanyId" name="SelectedCompanyId" class="form-control" onchange="this.form.submit()">
+            <option value="">-- Select a Company --</option>
+            @foreach (var company in Model.Companies)
+            {
+                <option value="@company.Id" selected="@(company.Id == Model.SelectedCompanyId)"> @company.CompanyName </option>
+            }
+
+
+        </select>
+    </div>
+</form>
+
+<br />
+
+@if (Model.SelectedCompanyId.HasValue && Model.SelectedCompanyAccounts.Count > 0)
+{
+    <!-- Accounts for the Selected Company -->
+    <table class="table table-hover">
+        <thead>
+            <tr>
+                <td>ID</td>
+                <td>Account Name</td>
+                <td>Account Number</td>
+                <td>Description</td>
+                <td>Normal Side</td>
+                <td>Category</td>
+                <td>Subcategory</td>
+                <td>Initial Balance</td>
+                <td>Debit</td>
+                <td>Credit</td>
+                <td>Balance</td>
+                <td>Date Added</td>
+                <td>User ID</td>
+                <td>Order</td>
+                <td>Statement</td>
+                <td>Comment</td>
+                @if (isAdmin)
+                {
+                    <td>Edit</td>
+                    <td>Delete</td>
+                }
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var account in Model.SelectedCompanyAccounts)
+            {
+                <tr>
+                    <td>@account.Id</td>
+                    <td>@account.AccountName</td>
+                    <td>@account.AccountNumber</td>
+                    <td>@account.AccountDescription</td>
+                    <td>@account.NormalSide</td>
+                    <td>@account.AccountCategory</td>
+                    <td>@account.AccountSubcategory</td>
+
+                    <td>@account.InitialBalance.ToString("C")</td>
+                    <td>@account.Debit.ToString("C")</td>
+                    <td>@account.Credit.ToString("C")</td>
+                    <td>@account.Balance.ToString("C")</td>
+                    <td>@account.DateAdded.ToString("MM/dd/yyyy HH:mm")</td>
+                    <td>@account.UserId</td>
+                    <td>@account.Order</td>
+                    <td>@account.Statement</td>
+                    <td>@account.Comment</td>
+
+                    @if (isAdmin)
+                    {
+                        <td>
+                            <a href="/Accounts/Edit/@account.Id" class="btn btn-primary">Edit</a>
+                        </td>
+                        <td>
+                            <form method="post" asp-page-handler="Delete" asp-route-id="@account.Id" style="display:inline;" onsubmit="return confirmDelete();">
+                                <button type="submit" class="btn btn-danger">Deactivate</button>
+                            </form>
+                        </td>
+                    }
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+else if (Model.SelectedCompanyId.HasValue)
+{
+    <p>No accounts found for the selected company.</p>
+}
+
+<script type="text/javascript">
+    function confirmDelete() {
+        return confirm("Are you sure you want to deactivate this account?");
+    }
+</script>
