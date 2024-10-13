@@ -9,6 +9,8 @@ namespace eCoinAccountingApp.Data
         public DbSet<PasswordHistory> PasswordHistories { get; set; }
         public DbSet<Account> Accounts { get; set; }
 
+        public DbSet<EventLog> EventLogs { get; set; }
+
         public DbSet<Company> Companies { get; set; }
         public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options)
             : base(options)

@@ -7,6 +7,9 @@
 @{
     var currentUser = await UserManager.GetUserAsync(User);
     var isAdmin = SignInManager.IsSignedIn(User) && currentUser.Role == "Admin";
+
+    string sortColumn = Model.SortColumn;
+    string sortOrder = Model.SortOrder == "asc" ? "desc" : "asc"; // Toggle sort order
 }
 
 <h1>User Type: @currentUser.Role</h1>
@@ -29,10 +32,19 @@
             {
                 <option value="@company.Id" selected="@(company.Id == Model.SelectedCompanyId)"> @company.CompanyName </option>
             }
-
-
         </select>
     </div>
+
+    <!-- Search bar: Only visible if a company is selected -->
+    @if (Model.SelectedCompanyId.HasValue)
+    {
+        <div class="form-group mt-2">
+            <label for="SearchQuery">Search Account:</label>
+            <input type="text" id="SearchQuery" name="SearchQuery" class="form-control" placeholder="Search by account name or number..." value="@Model.SearchQuery" />
+        </div>
+
+        <button type="submit" class="btn btn-primary mt-2">Search</button>
+    }
 </form>
 
 <br />
@@ -43,26 +55,25 @@
     <table class="table table-hover">
         <thead>
             <tr>
-                <td>ID</td>
-                <td>Account Name</td>
-                <td>Account Number</td>
-                <td>Description</td>
-                <td>Normal Side</td>
-                <td>Category</td>
-                <td>Subcategory</td>
-                <td>Initial Balance</td>
-                <td>Debit</td>
-                <td>Credit</td>
-                <td>Balance</td>
-                <td>Date Added</td>
-                <td>User ID</td>
-                <td>Order</td>
-                <td>Statement</td>
-                <td>Comment</td>
+                <th><a href="?SelectedCompanyId=@Model.SelectedCompanyId&sortColumn=AccountName&sortOrder=@sortOrder">Account Name</a></th>
+                <th><a href="?SelectedCompanyId=@Model.SelectedCompanyId&sortColumn=AccountNumber&sortOrder=@sortOrder">Account Number</a></th>
+                <th><a href="?SelectedCompanyId=@Model.SelectedCompanyId&sortColumn=AccountDescription&sortOrder=@sortOrder">Description</a></th>
+                <th><a href="?SelectedCompanyId=@Model.SelectedCompanyId&sortColumn=NormalSide&sortOrder=@sortOrder">Normal Side</a></th>
+                <th><a href="?SelectedCompanyId=@Model.SelectedCompanyId&sortColumn=AccountCategory&sortOrder=@sortOrder">Category</a></th>
+                <th><a href="?SelectedCompanyId=@Model.SelectedCompanyId&sortColumn=InitialBalance&sortOrder=@sortOrder">Initial Balance</a></th>
+                <th><a href="?SelectedCompanyId=@Model.SelectedCompanyId&sortColumn=Debit&sortOrder=@sortOrder">Debit</a></th>
+                <th><a href="?SelectedCompanyId=@Model.SelectedCompanyId&sortColumn=Credit&sortOrder=@sortOrder">Credit</a></th>
+                <th><a href="?SelectedCompanyId=@Model.SelectedCompanyId&sortColumn=Balance&sortOrder=@sortOrder">Balance</a></th>
+                <th><a href="?SelectedCompanyId=@Model.SelectedCompanyId&sortColumn=DateAdded&sortOrder=@sortOrder">Date Added</a></th>
+                <th><a href="?SelectedCompanyId=@Model.SelectedCompanyId&sortColumn=Statement&sortOrder=@sortOrder">Statement</a></th>
+                <th><a href="?SelectedCompanyId=@Model.SelectedCompanyId&sortColumn=Order&sortOrder=@sortOrder">Order</a></th>
+                <th><a href="?SelectedCompanyId=@Model.SelectedCompanyId&sortColumn=Comment&sortOrder=@sortOrder">Comment</a></th>
+                <th><a href="?SelectedCompanyId=@Model.SelectedCompanyId&sortColumn=UserId&sortOrder=@sortOrder">User ID</a></th>
+
                 @if (isAdmin)
                 {
-                    <td>Edit</td>
-                    <td>Delete</td>
+                    <th>Edit</th>
+                    <th>Delete</th>
                 }
             </tr>
         </thead>
@@ -70,29 +81,24 @@
             @foreach (var account in Model.SelectedCompanyAccounts)
             {
                 <tr>
-                    <td>@account.Id</td>
                     <td>@account.AccountName</td>
                     <td>@account.AccountNumber</td>
                     <td>@account.AccountDescription</td>
                     <td>@account.NormalSide</td>
                     <td>@account.AccountCategory</td>
-                    <td>@account.AccountSubcategory</td>
-
                     <td>@account.InitialBalance.ToString("C")</td>
                     <td>@account.Debit.ToString("C")</td>
                     <td>@account.Credit.ToString("C")</td>
                     <td>@account.Balance.ToString("C")</td>
                     <td>@account.DateAdded.ToString("MM/dd/yyyy HH:mm")</td>
-                    <td>@account.UserId</td>
-                    <td>@account.Order</td>
                     <td>@account.Statement</td>
+                    <td>@account.Order</td>
                     <td>@account.Comment</td>
+                    <td>@account.UserId</td>
 
                     @if (isAdmin)
                     {
-                        <td>
-                            <a href="/Accounts/Edit/@account.Id" class="btn btn-primary">Edit</a>
-                        </td>
+                        <td><a href="/Accounts/Edit/@account.Id" class="btn btn-primary">Edit</a></td>
                         <td>
                             <form method="post" asp-page-handler="Delete" asp-route-id="@account.Id" style="display:inline;" onsubmit="return confirmDelete();">
                                 <button type="submit" class="btn btn-danger">Deactivate</button>

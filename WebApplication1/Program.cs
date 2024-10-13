@@ -22,7 +22,7 @@ builder.Services.AddIdentity<ApplicationUser, IdentityRole>(options =>
 // Program.cs
 builder.Services.Configure<SmtpSettings>(builder.Configuration.GetSection("SmtpSettings"));
 builder.Services.AddSingleton<IEmailSender, EmailSender>();
-
+builder.Services.AddScoped<EventLogger>();
 
 
 builder.Services.AddRazorPages();
