@@ -12,9 +12,18 @@ namespace eCoinAccountingApp.Data
         public DbSet<EventLog> EventLogs { get; set; }
 
         public DbSet<Company> Companies { get; set; }
+
+        public DbSet<Journal> Journals { get; set; }
         public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options)
             : base(options)
         {
         }
+
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        {
+            base.OnModelCreating(modelBuilder);
+            modelBuilder.Entity<Journal>().ToTable("Journal");
+        }
+
     }
 }

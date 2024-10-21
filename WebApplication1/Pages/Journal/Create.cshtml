@@ -1,0 +1,49 @@
+﻿@page
+@model eCoinAccountingApp.Pages.Journal.CreateModel
+
+@{
+    ViewData["Title"] = "Create";
+}
+
+<h1>Create</h1>
+
+<h4>Journal</h4>
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <form method="post">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class="form-group">
+                <label asp-for="Journal.DateAdded" class="control-label"></label>
+                <input asp-for="Journal.DateAdded" class="form-control" />
+                <span asp-validation-for="Journal.DateAdded" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Journal.AccountName" class="control-label"></label>
+                <input asp-for="Journal.AccountName" class="form-control" />
+                <span asp-validation-for="Journal.AccountName" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Journal.Debit" class="control-label"></label>
+                <input asp-for="Journal.Debit" class="form-control" />
+                <span asp-validation-for="Journal.Debit" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Journal.Credit" class="control-label"></label>
+                <input asp-for="Journal.Credit" class="form-control" />
+                <span asp-validation-for="Journal.Credit" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <input type="submit" value="Create" class="btn btn-primary" />
+            </div>
+        </form>
+    </div>
+</div>
+
+<div>
+    <a asp-page="Index">Back to List</a>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

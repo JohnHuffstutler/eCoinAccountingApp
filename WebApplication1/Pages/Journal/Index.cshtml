@@ -1,0 +1,50 @@
+﻿@page
+@model eCoinAccountingApp.Pages.Journal.IndexModel
+
+@{
+    ViewData["Title"] = "Index";
+}
+
+<h1>Journal</h1>
+
+<span class="tt" data-bs-placement="bottom" title="Add a new journal entry.">
+    <a href="/Journal/Create" class="btn btn-primary">Add Journal Entry</a>
+</span>
+<br />
+<table class="table table-hover">
+    <thead>
+        <tr>
+            <td>Journal Number</td>
+            <td>Date</td>
+            <td>Account Name</td>
+            <td>Debit</td>
+            <td>Credit</td>
+            <td>Edit</td>
+            <td>Delete</td>
+        </tr>
+    </thead>
+    <tbody>
+        @{
+            foreach (var item in Model.Journals)
+            {
+                <tr>
+                    <td>@item.journalNum</td>
+                    <td>@item.DateAdded</td>
+                    <td>@item.AccountName</td>
+                    <td>@item.Credit</td>
+                    <td>@item.Debit</td>
+                    <td>
+                        <span class="tt" data-bs-placement="bottom" title="Edit journal entry.">
+                            <a href="/Journal/Edit?id=@item.journalNum" class="btn btn-primary">Edit</a>
+                        </span>
+                    </td>
+                    <td>
+                        <span class="tt" data-bs-placement="bottom" title="Delete journal entry.">
+                            <a onclick="return onDelete(@item.journalNum)" class="btn btn-danger">Delete</a>
+                        </span>
+                    </td>
+                </tr>
+            }
+        }
+    </tbody>
+</table>

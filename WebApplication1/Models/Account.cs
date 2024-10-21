@@ -22,5 +22,8 @@
         public int CompanyId { get; set; }
 
         public Company Company { get; set; }
+
+        public List<Journal> Journals { get; set; }
+
     }
 }
