@@ -1,16 +1,29 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using System;
+using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace eCoinAccountingApp.Models
 {
     public class Journal
     {
         [Key]
-        public int journalNum { get; set; }
+        public int JournalNum { get; set; }
+
+        [Required]
         public DateTime DateAdded { get; set; }
-        public string AccountName { get; set; }
-        public string Debit { get; set; }
-        public string Credit { get; set; }
+
+        [Required]
+        [ForeignKey("Account")]
+        public int AccountId { get; set; }
+
         public Account Account { get; set; }
 
+        [Column(TypeName = "decimal(18, 2)")]
+        public decimal Debit { get; set; }
+
+        [Column(TypeName = "decimal(18, 2)")]
+        public decimal Credit { get; set; }
+
+        public string? Description { get; set; }
     }
 }

@@ -17,7 +17,7 @@ namespace eCoinAccountingApp.Data.Migrations
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "8.0.10")
+                .HasAnnotation("ProductVersion", "8.0.8")
                 .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
@@ -383,31 +383,28 @@ namespace eCoinAccountingApp.Data.Migrations
 
             modelBuilder.Entity("eCoinAccountingApp.Models.Journal", b =>
                 {
-                    b.Property<int>("journalNum")
+                    b.Property<int>("JournalNum")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("journalNum"));
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("JournalNum"));
 
                     b.Property<int>("AccountId")
                         .HasColumnType("int");
 
-                    b.Property<string>("AccountName")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Credit")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                    b.Property<decimal>("Credit")
+                        .HasColumnType("decimal(18, 2)");
 
                     b.Property<DateTime>("DateAdded")
                         .HasColumnType("datetime2");
 
-                    b.Property<string>("Debit")
-                        .IsRequired()
+                    b.Property<decimal>("Debit")
+                        .HasColumnType("decimal(18, 2)");
+
+                    b.Property<string>("Description")
                         .HasColumnType("nvarchar(max)");
 
-                    b.HasKey("journalNum");
+                    b.HasKey("JournalNum");
 
                     b.HasIndex("AccountId");
 

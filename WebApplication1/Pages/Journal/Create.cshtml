@@ -2,37 +2,54 @@
 @model eCoinAccountingApp.Pages.Journal.CreateModel
 
 @{
-    ViewData["Title"] = "Create";
+    ViewData["Title"] = "Create Journal Entry";
 }
 
-<h1>Create</h1>
+<h1>Create Journal Entry</h1>
 
-<h4>Journal</h4>
-<hr />
 <div class="row">
     <div class="col-md-4">
         <form method="post">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+            <!-- Account Selection Dropdown -->
             <div class="form-group">
-                <label asp-for="Journal.DateAdded" class="control-label"></label>
-                <input asp-for="Journal.DateAdded" class="form-control" />
-                <span asp-validation-for="Journal.DateAdded" class="text-danger"></span>
+                <label for="SelectedAccountId" class="control-label">Account</label>
+                <select id="SelectedAccountId" name="SelectedAccountId" class="form-control" asp-for="Journal.AccountId">
+                    <option value="">-- Select an Account --</option>
+                    @foreach (var account in Model.Accounts)
+                    {
+                        <option value="@account.Id">@account.AccountName</option>
+                    }
+                </select>
+                <span asp-validation-for="Journal.AccountId" class="text-danger"></span>
             </div>
+
+            <!-- Date Added: Automatically populated with current date -->
             <div class="form-group">
-                <label asp-for="Journal.AccountName" class="control-label"></label>
-                <input asp-for="Journal.AccountName" class="form-control" />
-                <span asp-validation-for="Journal.AccountName" class="text-danger"></span>
+                <label asp-for="Journal.DateAdded" class="control-label">Date</label>
+                <input asp-for="Journal.DateAdded" class="form-control" readonly />
             </div>
+
             <div class="form-group">
-                <label asp-for="Journal.Debit" class="control-label"></label>
+                <label asp-for="Journal.Description" class="control-label">Description</label>
+                <input asp-for="Journal.Description" class="form-control" />
+                <span
+
+            <!-- Debit and Credit Fields with Validation -->
+            <div class="form-group">
+                <label asp-for="Journal.Debit" class="control-label">Debit</label>
                 <input asp-for="Journal.Debit" class="form-control" />
                 <span asp-validation-for="Journal.Debit" class="text-danger"></span>
             </div>
+
             <div class="form-group">
-                <label asp-for="Journal.Credit" class="control-label"></label>
+                <label asp-for="Journal.Credit" class="control-label">Credit</label>
                 <input asp-for="Journal.Credit" class="form-control" />
                 <span asp-validation-for="Journal.Credit" class="text-danger"></span>
             </div>
+
+            <!-- Submit Button -->
             <div class="form-group">
                 <input type="submit" value="Create" class="btn btn-primary" />
             </div>
@@ -40,10 +57,8 @@
     </div>
 </div>
 
-<div>
-    <a asp-page="Index">Back to List</a>
-</div>
-
 @section Scripts {
-    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
 }

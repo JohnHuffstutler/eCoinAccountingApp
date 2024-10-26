@@ -1,4 +1,4 @@
-﻿@using Microsoft.AspNetCore.Identity
+﻿            @using Microsoft.AspNetCore.Identity
 @inject UserManager<ApplicationUser> UserManager
 @inject SignInManager<ApplicationUser> SignInManager
 
@@ -50,14 +50,14 @@
 
                             <!-- Journal -->
                             <div class="d-flex align-items-center" style="min-height: 80px;">
-                                <span class="tt" data-bs-placement="bottom" title="Create or modify journal entries.">
+                                <span class="tt" data-bs-placement="bottom" title="Create or modify journal entries.">      
                                     <a class="nav-link" asp-area="" asp-page="/Journal/Index" style="font-size: x-large;">Journal</a>
                                 </span>
                             </div>
 
                             <!-- Ledger -->
                             <div class="d-flex align-items-center" style="min-height: 80px;">
-                                <span class="tt" data-bs-placement="bottom" title="View general ledger.">
+                                <span class="tt" data-bs-placement="bottom" title="View general ledger.">   
                                     <a class="nav-link" asp-area="" asp-page="/Ledger" style="font-size: x-large;">Ledger</a>
                                 </span>
                             </div>

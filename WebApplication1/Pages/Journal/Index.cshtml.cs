@@ -1,6 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
+﻿using System.Collections.Generic;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
@@ -12,18 +10,34 @@ namespace eCoinAccountingApp.Pages.Journal
 {
     public class IndexModel : PageModel
     {
-        private readonly eCoinAccountingApp.Data.ApplicationDbContext _context;
+        private readonly ApplicationDbContext _context;
 
-        public IndexModel(eCoinAccountingApp.Data.ApplicationDbContext context)
+        public IndexModel(ApplicationDbContext context)
         {
             _context = context;
         }
 
-        public IList<eCoinAccountingApp.Models.Journal> Journals { get;set; } = default!;
+        public IList<Models.Journal> Journals { get; set; } = default!;
 
         public async Task OnGetAsync()
         {
-            Journals = (IList<eCoinAccountingApp.Models.Journal>)await _context.Journals.ToListAsync();
+            Journals = await _context.Journals
+                .Include(j => j.Account)
+                .ToListAsync(); 
+        }
+
+        public async Task<IActionResult> OnPostDeleteAsync(int id)
+        {
+            var journal = await _context.Journals.FindAsync(id);
+            if (journal == null)
+            {
+                return NotFound();
+            }
+
+            _context.Journals.Remove(journal);
+            await _context.SaveChangesAsync();
+
+            return RedirectToPage();
         }
     }
 }

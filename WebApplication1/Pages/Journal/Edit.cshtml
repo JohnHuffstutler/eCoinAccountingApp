@@ -2,38 +2,47 @@
 @model eCoinAccountingApp.Pages.Journal.EditModel
 
 @{
-    ViewData["Title"] = "Edit";
+    ViewData["Title"] = "Edit Journal Entry";
 }
 
-<h1>Edit</h1>
+<h1>Edit Journal Entry</h1>
 
-<h4>Journal</h4>
-<hr />
 <div class="row">
     <div class="col-md-4">
         <form method="post">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <input type="hidden" asp-for="Journals.journalNum" />
+            <input type="hidden" asp-for="Journal.JournalNum" />
+
             <div class="form-group">
-                <label asp-for="Journals.DateAdded" class="control-label"></label>
-                <input asp-for="Journals.DateAdded" class="form-control" />
-                <span asp-validation-for="Journals.DateAdded" class="text-danger"></span>
+                <label asp-for="Journal.DateAdded" class="control-label"></label>
+                <input asp-for="Journal.DateAdded" class="form-control" readonly />
+                <span asp-validation-for="Journal.DateAdded" class="text-danger"></span>
             </div>
+
             <div class="form-group">
-                <label asp-for="Journals.AccountName" class="control-label"></label>
-                <input asp-for="Journals.AccountName" class="form-control" />
-                <span asp-validation-for="Journals.AccountName" class="text-danger"></span>
+                <label asp-for="Journal.Account.AccountName" class="control-label"></label>
+                <input asp-for="Journal.Account.AccountName" class="form-control" readonly />
+                <span asp-validation-for="Journal.Account.AccountName" class="text-danger"></span>
             </div>
+
             <div class="form-group">
-                <label asp-for="Journals.Debit" class="control-label"></label>
-                <input asp-for="Journals.Debit" class="form-control" />
-                <span asp-validation-for="Journals.Debit" class="text-danger"></span>
+                <label asp-for="Journal.Description" class="control-label"></label>
+                <input asp-for="Journal.Description" class="form-control" />
+                <span asp-validation-for="Journal.Description" class="text-danger"></span>
             </div>
+
             <div class="form-group">
-                <label asp-for="Journals.Credit" class="control-label"></label>
-                <input asp-for="Journals.Credit" class="form-control" />
-                <span asp-validation-for="Journals.Credit" class="text-danger"></span>
+                <label asp-for="Journal.Debit" class="control-label"></label>
+                <input asp-for="Journal.Debit" class="form-control" />
+                <span asp-validation-for="Journal.Debit" class="text-danger"></span>
             </div>
+
+            <div class="form-group">
+                <label asp-for="Journal.Credit" class="control-label"></label>
+                <input asp-for="Journal.Credit" class="form-control" />
+                <span asp-validation-for="Journal.Credit" class="text-danger"></span>
+            </div>
+
             <div class="form-group">
                 <input type="submit" value="Save" class="btn btn-primary" />
             </div>
@@ -42,9 +51,11 @@
 </div>
 
 <div>
-    <a asp-page="./Index">Back to List</a>
+    <a asp-page="Journal/Index">Back to List</a>
 </div>
 
 @section Scripts {
-    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
 }
