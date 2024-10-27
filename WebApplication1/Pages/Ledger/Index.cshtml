@@ -1,0 +1,47 @@
+﻿@page "/Ledger/Index"
+@model eCoinAccountingApp.Pages.Ledger.IndexModel
+
+@{
+    ViewData["Title"] = "Ledger";
+    decimal runningBalance = 0; 
+}
+
+<h1>Ledger</h1>
+
+
+<br />
+<br />
+
+<table class="table table-hover">
+    <thead>
+        <tr>
+            <th>Journal Number</th>
+            <th>Date</th>
+            <th>Account Number</th>
+            <th>Account Name</th>
+            <th>Normal Side</th>
+            <th>Description</th>
+            <th>Debit</th>
+            <th>Credit</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model.Journals)
+        {
+            runningBalance += item.Debit - item.Credit;
+            <tr>
+                <td>@item.JournalNum</td>
+                <td>@item.DateAdded.ToString("MM/dd/yyyy")</td>
+                <td>@item.Account.AccountNumber</td>
+                <td>@item.Account.AccountName</td>
+                <td>@item.Account.NormalSide</td>
+                <td>@item.Description</td>
+                <td>@item.Debit.ToString("C")</td>
+                <td>@item.Credit.ToString("C")</td>
+            </tr>
+        }
+        <h1>Balance: @runningBalance</h1>
+    </tbody>
+    
+</table>
+
