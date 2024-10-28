@@ -13,6 +13,17 @@
     var isManager = SignInManager.IsSignedIn(User) && currentUser.Role == "Manager";
 }
 
+@{
+    var journalNum = Request.Query["JournalNum"];
+    if (!string.IsNullOrEmpty(journalNum))
+    {
+        Model.Journals = Model.Journals
+            .Where(j => j.JournalNum.ToString() == journalNum)
+            .ToList();
+    }
+}
+
+
 <h1>Journal Entries</h1>
 
 <!-- Search and Add New Journal Entry -->
