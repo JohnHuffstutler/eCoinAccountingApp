@@ -109,7 +109,7 @@
             @foreach (var account in Model.SelectedCompanyAccounts)
             {
                 <tr>
-                    <td>@account.AccountName</td>
+                    <td><a href="/Ledger/Index?SearchQuery=@account.AccountName">@account.AccountName</a></td>
                     <td>@account.AccountNumber</td>
                     <td>@account.AccountDescription</td>
                     <td>@account.NormalSide</td>
