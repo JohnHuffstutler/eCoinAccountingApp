@@ -8,6 +8,8 @@ using Microsoft.EntityFrameworkCore;
 using eCoinAccountingApp.Data;
 using eCoinAccountingApp.Models;
 using eCoinAccountingApp.Services;
+using System.ComponentModel;
+using System.IO;
 
 namespace eCoinAccountingApp.Pages.Journal
 {
@@ -30,6 +32,10 @@ namespace eCoinAccountingApp.Pages.Journal
 
         [BindProperty]
         public int SelectedAccountId { get; set; }  // Stores selected account ID from dropdown
+
+        [BindProperty]
+        public IFormFile UploadedDocument { get; set; } // For file uploads
+
 
         public async Task<IActionResult> OnGetAsync()
         {
@@ -60,7 +66,7 @@ namespace eCoinAccountingApp.Pages.Journal
             {
                 ModelState.AddModelError("Journal.Debit", "Only one of Debit or Credit can be filled.");
             }
-
+                  
             ModelState.Remove("Journal.Account");
             ModelState.Remove("Journal.Description");
 
@@ -72,6 +78,28 @@ namespace eCoinAccountingApp.Pages.Journal
             // Set the account and user data
             Journal.AccountId = SelectedAccountId;
             Journal.DateAdded = DateTime.Now;
+
+            // File upload handling
+            if (UploadedDocument != null && UploadedDocument.Length > 0)
+            {
+                string fileName = Path.GetFileName(UploadedDocument.FileName);
+                string filePath = Path.Combine("wwwroot/uploads", fileName); // Update this path as needed
+
+                // Ensure the uploads directory exists
+                if (!Directory.Exists(Path.Combine("wwwroot", "uploads")))
+                {
+                    Directory.CreateDirectory(Path.Combine("wwwroot", "uploads"));
+                }
+
+                using (var stream = new FileStream(filePath, FileMode.Create))
+                {
+                    await UploadedDocument.CopyToAsync(stream);
+                }
+
+                // Save only the relative path (without wwwroot)
+                Journal.DocumentPath = "uploads/" + fileName; 
+                
+            }
 
             // Save the journal entry
             _context.Journals.Add(Journal);

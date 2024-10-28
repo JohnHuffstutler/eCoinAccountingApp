@@ -9,7 +9,7 @@
 
 <div class="row">
     <div class="col-md-4">
-        <form method="post">
+        <form method="post" enctype="multipart/form-data">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
 
             <!-- Account Selection Dropdown -->
@@ -34,7 +34,7 @@
             <div class="form-group">
                 <label asp-for="Journal.Description" class="control-label">Description</label>
                 <input asp-for="Journal.Description" class="form-control" />
-                <span
+            </div>
 
             <!-- Debit and Credit Fields with Validation -->
             <div class="form-group">
@@ -43,11 +43,40 @@
                 <span asp-validation-for="Journal.Debit" class="text-danger"></span>
             </div>
 
+            <!--Add An Additional Debit Field
+            <div>
+                <button class="add-more" type="button">Add another debit</button>
+            </div>-->
+
             <div class="form-group">
                 <label asp-for="Journal.Credit" class="control-label">Credit</label>
                 <input asp-for="Journal.Credit" class="form-control" />
                 <span asp-validation-for="Journal.Credit" class="text-danger"></span>
             </div>
+
+            <!--Add An Additional Credit Field
+            <div>
+                <button class="add-more" type="button">Add another credit</button>
+            </div>-->
+
+            <!--Attach Document-->
+            <div class="form-group">
+                <label asp-for="Journal.DocumentPath" class="control-label">Attach Document</label>
+                <input type="file" name="UploadedDocument" class="form-control" />
+                <span asp-validation-for="Journal.DocumentPath" class="text-danger"></span>
+            </div>
+
+
+            <!-- Status Dropdown-->
+            <div class="form-group">
+                <label asp-for="Journal.Status" class="control-label">Status</label>
+                <select asp-for="Journal.Status" class="form-control">
+                    <option value="Pending">Pending</option>
+                    <option value="Approved">Approved</option>
+                    <option value="Rejected">Rejected</option>
+                </select>
+                <span asp-validation-for="Journal.Status" class="text-danger"></span>
+            </div>            
 
             <!-- Submit Button -->
             <div class="form-group">

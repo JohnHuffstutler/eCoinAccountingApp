@@ -25,5 +25,9 @@ namespace eCoinAccountingApp.Models
         public decimal Credit { get; set; }
 
         public string? Description { get; set; }
+
+        public string Status { get; set; }
+
+        public string? DocumentPath { get; set; } // To store the file path
     }
 }

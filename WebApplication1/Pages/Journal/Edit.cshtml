@@ -43,6 +43,17 @@
                 <span asp-validation-for="Journal.Credit" class="text-danger"></span>
             </div>
 
+            <!-- Status Dropdown-->
+            <div class="form-group">
+                <label asp-for="Journal.Status" class="control-label">Status</label>
+                <select asp-for="Journal.Status" class="form-control">
+                    <option value="Pending">Pending</option>
+                    <option value="Approved">Approved</option>
+                    <option value="Rejected">Rejected</option>
+                </select>
+                <span asp-validation-for="Journal.Status" class="text-danger"></span>
+            </div>
+
             <div class="form-group">
                 <input type="submit" value="Save" class="btn btn-primary" />
             </div>

@@ -71,6 +71,7 @@ namespace eCoinAccountingApp.Pages.Journal
             existingJournal.Description = Journal.Description;
             existingJournal.Debit = Journal.Debit;
             existingJournal.Credit = Journal.Credit;
+            existingJournal.Status = Journal.Status;
 
             try
             {

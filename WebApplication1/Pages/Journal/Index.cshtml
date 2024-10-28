@@ -23,6 +23,8 @@
             <th>Description</th>
             <th>Debit</th>
             <th>Credit</th>
+            <th>Status</th>
+            <th>File</th>
             <th>Edit</th>
             <th>Delete</th>
         </tr>
@@ -37,6 +39,15 @@
                 <td>@item.Description</td> <!-- Ensure Account is included in the query -->
                 <td>@item.Debit.ToString("C")</td>
                 <td>@item.Credit.ToString("C")</td>
+                <td>@item.Status</td>
+                <td>
+                    @if (!string.IsNullOrEmpty(item.DocumentPath))
+                    { 
+                        <a href="@Url.Content("~/" + item.DocumentPath)" target="_blank">View Uploaded Document</a>
+                    }
+
+                </td>
+                
                 <td>
                     <span class="tt" data-bs-placement="bottom" title="Edit journal entry.">
                         <a href="/Journal/Edit?id=@item.JournalNum" class="btn btn-primary">Edit</a>
