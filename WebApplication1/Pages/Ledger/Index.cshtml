@@ -6,7 +6,12 @@
     decimal runningBalance = 0;
 
     string sortColumn = Model.SortColumn;
-    string sortOrder = Model.SortOrder == "asc" ? "desc" : "asc"; 
+    string sortOrder = Model.SortOrder == "asc" ? "desc" : "asc";
+
+    // Filter to show only Approved journal entries
+    Model.Journals = Model.Journals
+        .Where(j => j.Status == "Approved")
+         .ToList();
 }
 
 <h1>Ledger</h1>
