@@ -1,8 +1,15 @@
 ﻿@page
 @model eCoinAccountingApp.Pages.Journal.EditModel
+@using Microsoft.AspNetCore.Identity
+@inject UserManager<ApplicationUser> UserManager
+@inject SignInManager<ApplicationUser> SignInManager
 
 @{
     ViewData["Title"] = "Edit Journal Entry";
+
+    var currentUser = await UserManager.GetUserAsync(User);
+    var isAdminOrManager = SignInManager.IsSignedIn(User) &&
+                           (currentUser.Role == "Admin" || currentUser.Role == "Manager");
 }
 
 <h1>Edit Journal Entry</h1>
@@ -43,16 +50,24 @@
                 <span asp-validation-for="Journal.Credit" class="text-danger"></span>
             </div>
 
-            <!-- Status Dropdown-->
-            <div class="form-group">
-                <label asp-for="Journal.Status" class="control-label">Status</label>
-                <select asp-for="Journal.Status" class="form-control">
-                    <option value="Pending">Pending</option>
-                    <option value="Approved">Approved</option>
-                    <option value="Rejected">Rejected</option>
-                </select>
-                <span asp-validation-for="Journal.Status" class="text-danger"></span>
-            </div>
+            @if (isAdminOrManager)
+            {
+                <!-- Status Dropdown visible to Admin/Manager roles -->
+                <div class="form-group">
+                    <label asp-for="Journal.Status" class="control-label">Status</label>
+                    <select asp-for="Journal.Status" class="form-control">
+                        <option value="Pending">Pending</option>
+                        <option value="Approved">Approved</option>
+                        <option value="Rejected">Rejected</option>
+                    </select>
+                    <span asp-validation-for="Journal.Status" class="text-danger"></span>
+                </div>
+            }
+            else
+            {
+                <!-- Hidden input to pass default Status if user is not Admin/Manager -->
+                <input type="hidden" asp-for="Journal.Status" value="Pending" />
+            }
 
             <div class="form-group">
                 <input type="submit" value="Save" class="btn btn-primary" />

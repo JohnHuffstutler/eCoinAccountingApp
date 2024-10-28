@@ -19,7 +19,7 @@ public class EmailSender : IEmailSender
         var client = new SmtpClient(_smtpSettings.Host, _smtpSettings.Port)
         {
             Credentials = new NetworkCredential(_smtpSettings.Username, _smtpSettings.Password),
-            EnableSsl = true // Use SSL if needed
+            EnableSsl = true 
         };
 
         var mailMessage = new MailMessage

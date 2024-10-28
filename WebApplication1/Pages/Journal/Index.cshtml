@@ -1,29 +1,43 @@
-﻿@page "/Journal/Index"
+﻿@page "Journal/Index"
 @model eCoinAccountingApp.Pages.Journal.IndexModel
+@inject UserManager<ApplicationUser> UserManager
+@inject SignInManager<ApplicationUser> SignInManager
 
 @{
     ViewData["Title"] = "Journal Entries";
+
+    string sortColumn = Model.SortColumn;
+    string sortOrder = Model.SortOrder == "asc" ? "desc" : "asc";
+    var currentUser = await UserManager.GetUserAsync(User);
+    var isAdmin = SignInManager.IsSignedIn(User) && currentUser.Role == "Admin";
+    var isManager = SignInManager.IsSignedIn(User) && currentUser.Role == "Manager";
 }
 
 <h1>Journal Entries</h1>
 
-<span class="tt" data-bs-placement="bottom" title="Add a new journal entry.">
+<!-- Search and Add New Journal Entry -->
+<form method="get">
+    <div class="form-group mb-3">
+        <label for="SearchQuery">Search Journal Entries:</label>
+        <input type="text" id="SearchQuery" name="SearchQuery" class="form-control" placeholder="Search by account name or description..." value="@Model.SearchQuery" />
+    </div>
+    <button type="submit" class="btn btn-primary">Search</button>
     <a href="/Journal/Create" class="btn btn-primary">Add Journal Entry</a>
-</span>
+</form>
 
 <br />
-<br />
 
+<!-- Journal Entries Table -->
 <table class="table table-hover">
     <thead>
         <tr>
-            <th>Journal Number</th>
-            <th>Date</th>
-            <th>Account Name</th>
-            <th>Description</th>
-            <th>Debit</th>
-            <th>Credit</th>
-            <th>Status</th>
+            <th><a href="?sortColumn=JournalNum&sortOrder=@sortOrder">Journal Number</a></th>
+            <th><a href="?sortColumn=DateAdded&sortOrder=@sortOrder">Date</a></th>
+            <th><a href="?sortColumn=AccountName&sortOrder=@sortOrder">Account Name</a></th>
+            <th><a href="?sortColumn=Description&sortOrder=@sortOrder">Description</a></th>
+            <th><a href="?sortColumn=Debit&sortOrder=@sortOrder">Debit</a></th>
+            <th><a href="?sortColumn=Credit&sortOrder=@sortOrder">Credit</a></th>
+            <th><a href="?sortColumn=Status&sortOrder=@sortOrder">Status</a></th>
             <th>File</th>
             <th>Edit</th>
             <th>Delete</th>
@@ -35,29 +49,24 @@
             <tr>
                 <td>@item.JournalNum</td>
                 <td>@item.DateAdded.ToString("MM/dd/yyyy")</td>
-                <td>@item.Account.AccountName</td> <!-- Ensure Account is included in the query -->
-                <td>@item.Description</td> <!-- Ensure Account is included in the query -->
+                <td>@item.Account.AccountName</td>
+                <td>@item.Description</td>
                 <td>@item.Debit.ToString("C")</td>
                 <td>@item.Credit.ToString("C")</td>
                 <td>@item.Status</td>
                 <td>
                     @if (!string.IsNullOrEmpty(item.DocumentPath))
-                    { 
+                    {
                         <a href="@Url.Content("~/" + item.DocumentPath)" target="_blank">View Uploaded Document</a>
                     }
-
                 </td>
-                
-                <td>
-                    <span class="tt" data-bs-placement="bottom" title="Edit journal entry.">
-                        <a href="/Journal/Edit?id=@item.JournalNum" class="btn btn-primary">Edit</a>
-                    </span>
-                </td>
-                <td>
-                    <span class="tt" data-bs-placement="bottom" title="Delete journal entry.">
+                <td><a href="/Journal/Edit?id=@item.JournalNum" class="btn btn-primary">Edit</a></td>
+                @if(isAdmin || isManager)
+                {
+                    <td>
                         <button class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#deleteModal" data-journal-id="@item.JournalNum">Delete</button>
-                    </span>
-                </td>
+                    </td>
+                }
             </tr>
         }
     </tbody>

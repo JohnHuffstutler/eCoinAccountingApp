@@ -2,6 +2,7 @@ using eCoinAccountingApp.Data;
 using eCoinAccountingApp.Models;
 using eCoinAccountingApp.Services;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore;
@@ -16,12 +17,14 @@ namespace eCoinAccountingApp.Pages.Account
         private readonly ApplicationDbContext _context;
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly EventLogger _eventLogger;
+        private readonly IEmailSender _emailSender;
 
-        public IndexModel(ApplicationDbContext context, UserManager<ApplicationUser> userManager, EventLogger eventLogger)
+        public IndexModel(ApplicationDbContext context, UserManager<ApplicationUser> userManager, EventLogger eventLogger, IEmailSender emailSender)
         {
             _context = context;
             _userManager = userManager;
             _eventLogger = eventLogger;
+            _emailSender = emailSender;
         }
 
         // List of companies for the dropdown
@@ -43,14 +46,18 @@ namespace eCoinAccountingApp.Pages.Account
         public string SortColumn { get; set; }
 
         [BindProperty(SupportsGet = true)]
-        public string SortOrder { get; set; } = "asc"; // Default to ascending
+        public string SortOrder { get; set; } = "asc";
+
+        [BindProperty]
+        public string Subject { get; set; }
+
+        [BindProperty]
+        public string Body { get; set; }
 
         public async Task OnGetAsync()
         {
-            // Load all companies
             Companies = await _context.Companies.ToListAsync();
 
-            // If a company is selected, load its accounts
             if (SelectedCompanyId.HasValue)
             {
                 var query = _context.Accounts
@@ -63,14 +70,12 @@ namespace eCoinAccountingApp.Pages.Account
                     query = query.Where(a => a.AccountName.Contains(SearchQuery) || a.AccountNumber.Contains(SearchQuery));
                 }
 
-                // Apply sorting
                 query = SortAccounts(query, SortColumn, SortOrder);
 
                 SelectedCompanyAccounts = await query.ToListAsync();
             }
         }
 
-        // Method to apply sorting based on the column and order
         private IQueryable<eCoinAccountingApp.Models.Account> SortAccounts(IQueryable<eCoinAccountingApp.Models.Account> query, string sortColumn, string sortOrder)
         {
             switch (sortColumn)
@@ -103,7 +108,7 @@ namespace eCoinAccountingApp.Pages.Account
                     query = sortOrder == "asc" ? query.OrderBy(a => a.Order) : query.OrderByDescending(a => a.Order);
                     break;
                 default:
-                    query = query.OrderBy(a => a.Id); // Default sort by Id
+                    query = query.OrderBy(a => a.Id); 
                     break;
             }
             return query;
@@ -129,8 +134,30 @@ namespace eCoinAccountingApp.Pages.Account
 
             await _eventLogger.LogEventAsync($"Account '{accountToDelete.AccountName}' deactivated.", currentUser.Id);
 
-            // Reload the page after deletion
+            return RedirectToPage(new { SelectedCompanyId });
+        }
+        public async Task<IActionResult> OnPostSendEmailAsync()
+        {
+            if (string.IsNullOrWhiteSpace(Subject) || string.IsNullOrWhiteSpace(Body))
+            {
+                ModelState.AddModelError(string.Empty, "Subject and Body are required.");
+                return Page();
+            }
+
+            var adminAndManagerUsers = await _userManager.Users
+                .Where(user => user.Role == "Admin" || user.Role == "Manager")
+                .ToListAsync();
+
+            foreach (var user in adminAndManagerUsers)
+            {
+                await _emailSender.SendEmailAsync(user.Email, Subject, Body);
+            }
+
+            var currentUser = await _userManager.GetUserAsync(User);
+            await _eventLogger.LogEventAsync($"Sent email to admins and managers with subject: '{Subject}'", currentUser.Id);
+
             return RedirectToPage(new { SelectedCompanyId });
         }
     }
 }
+

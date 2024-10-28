@@ -1,4 +1,6 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
@@ -19,26 +21,53 @@ namespace eCoinAccountingApp.Pages.Ledger
 
         public IList<Models.Journal> Journals { get; set; } = default!;
 
+        [BindProperty(SupportsGet = true)]
+        public string SearchQuery { get; set; }
+
+        [BindProperty(SupportsGet = true)]
+        public string SortColumn { get; set; }
+
+        [BindProperty(SupportsGet = true)]
+        public string SortOrder { get; set; } = "asc"; 
+
         public async Task OnGetAsync()
         {
-            // Include Account details for each Journal entry for Ledger display
-            Journals = await _context.Journals
+            var query = _context.Journals
                 .Include(j => j.Account)
-                .ToListAsync();
-        }
+                .AsQueryable();
 
-        public async Task<IActionResult> OnPostDeleteAsync(int id)
-        {
-            var journal = await _context.Journals.FindAsync(id);
-            if (journal == null)
+            if (!string.IsNullOrWhiteSpace(SearchQuery))
             {
-                return NotFound();
+                query = query.Where(j =>
+                    j.JournalNum.ToString().Contains(SearchQuery) ||         
+                    j.DateAdded.ToString().Contains(SearchQuery) ||          
+                    j.Account.AccountNumber.Contains(SearchQuery) ||        
+                    j.Account.AccountName.Contains(SearchQuery) ||           
+                    j.Account.NormalSide.Contains(SearchQuery) ||            
+                    j.Description.Contains(SearchQuery) ||                   
+                    j.Debit.ToString().Contains(SearchQuery) ||             
+                    j.Credit.ToString().Contains(SearchQuery));              
             }
 
-            _context.Journals.Remove(journal);
-            await _context.SaveChangesAsync();
+            query = SortJournals(query, SortColumn, SortOrder);
 
-            return RedirectToPage();
+            Journals = await query.ToListAsync();
+        }
+
+        private IQueryable<Models.Journal> SortJournals(IQueryable<Models.Journal> query, string sortColumn, string sortOrder)
+        {
+            return sortColumn switch
+            {
+                "JournalNum" => sortOrder == "asc" ? query.OrderBy(j => j.JournalNum) : query.OrderByDescending(j => j.JournalNum),
+                "DateAdded" => sortOrder == "asc" ? query.OrderBy(j => j.DateAdded) : query.OrderByDescending(j => j.DateAdded),
+                "AccountNumber" => sortOrder == "asc" ? query.OrderBy(j => j.Account.AccountNumber) : query.OrderByDescending(j => j.Account.AccountNumber),
+                "AccountName" => sortOrder == "asc" ? query.OrderBy(j => j.Account.AccountName) : query.OrderByDescending(j => j.Account.AccountName),
+                "NormalSide" => sortOrder == "asc" ? query.OrderBy(j => j.Account.NormalSide) : query.OrderByDescending(j => j.Account.NormalSide),
+                "Description" => sortOrder == "asc" ? query.OrderBy(j => j.Description) : query.OrderByDescending(j => j.Description),
+                "Debit" => sortOrder == "asc" ? query.OrderBy(j => j.Debit) : query.OrderByDescending(j => j.Debit),
+                "Credit" => sortOrder == "asc" ? query.OrderBy(j => j.Credit) : query.OrderByDescending(j => j.Credit),
+                _ => query.OrderBy(j => j.JournalNum), // Default sort
+            };
         }
     }
 }

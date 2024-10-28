@@ -9,10 +9,12 @@
     var isAdmin = SignInManager.IsSignedIn(User) && currentUser.Role == "Admin";
 
     string sortColumn = Model.SortColumn;
-    string sortOrder = Model.SortOrder == "asc" ? "desc" : "asc"; // Toggle sort order
+    string sortOrder = Model.SortOrder == "asc" ? "desc" : "asc"; 
 }
 
 <h1>User Type: @currentUser.Role</h1>
+
+<button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#emailModal">Send Email</button>
 
 @if (isAdmin)
 {
@@ -24,9 +26,33 @@
     </span>
 }
 
-<br />
+<div class="modal fade" id="emailModal" tabindex="-1" aria-labelledby="emailModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="emailModalLabel">Send Email to Admin & Managers</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <form method="post" asp-page-handler="SendEmail">
+                <div class="modal-body">
+                    <div class="form-group">
+                        <label for="emailSubject">Subject</label>
+                        <input type="text" id="emailSubject" name="Subject" class="form-control" required />
+                    </div>
+                    <div class="form-group">
+                        <label for="emailBody">Body</label>
+                        <textarea id="emailBody" name="Body" class="form-control" rows="5" required></textarea>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="submit" class="btn btn-primary">Send Email</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
 
-<!-- Company Selection Dropdown -->
 <form method="get">
     <div class="form-group">
         <label for="SelectedCompanyId">Select Company:</label>
@@ -39,7 +65,6 @@
         </select>
     </div>
 
-    <!-- Search bar: Only visible if a company is selected -->
     @if (Model.SelectedCompanyId.HasValue)
     {
         <div class="form-group mt-2">
@@ -55,7 +80,6 @@
 
 @if (Model.SelectedCompanyId.HasValue && Model.SelectedCompanyAccounts.Count > 0)
 {
-    <!-- Accounts for the Selected Company -->
     <table class="table table-hover">
         <thead>
             <tr>

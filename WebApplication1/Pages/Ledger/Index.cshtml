@@ -3,26 +3,35 @@
 
 @{
     ViewData["Title"] = "Ledger";
-    decimal runningBalance = 0; 
+    decimal runningBalance = 0;
+
+    string sortColumn = Model.SortColumn;
+    string sortOrder = Model.SortOrder == "asc" ? "desc" : "asc"; 
 }
 
 <h1>Ledger</h1>
 
+<form method="get">
+    <div class="form-group mb-3">
+        <label for="SearchQuery">Search Ledger Entries:</label>
+        <input type="text" id="SearchQuery" name="SearchQuery" class="form-control" placeholder="Search by any field..." value="@Model.SearchQuery" />
+    </div>
+    <button type="submit" class="btn btn-primary">Search</button>
+</form>
 
-<br />
 <br />
 
 <table class="table table-hover">
     <thead>
         <tr>
-            <th>Journal Number</th>
-            <th>Date</th>
-            <th>Account Number</th>
-            <th>Account Name</th>
-            <th>Normal Side</th>
-            <th>Description</th>
-            <th>Debit</th>
-            <th>Credit</th>
+            <th><a href="?sortColumn=JournalNum&sortOrder=@sortOrder">Journal Number</a></th>
+            <th><a href="?sortColumn=DateAdded&sortOrder=@sortOrder">Date</a></th>
+            <th><a href="?sortColumn=AccountNumber&sortOrder=@sortOrder">Account Number</a></th>
+            <th><a href="?sortColumn=AccountName&sortOrder=@sortOrder">Account Name</a></th>
+            <th><a href="?sortColumn=NormalSide&sortOrder=@sortOrder">Normal Side</a></th>
+            <th><a href="?sortColumn=Description&sortOrder=@sortOrder">Description</a></th>
+            <th><a href="?sortColumn=Debit&sortOrder=@sortOrder">Debit</a></th>
+            <th><a href="?sortColumn=Credit&sortOrder=@sortOrder">Credit</a></th>
         </tr>
     </thead>
     <tbody>
@@ -40,8 +49,7 @@
                 <td>@item.Credit.ToString("C")</td>
             </tr>
         }
-        <h1>Balance: @runningBalance</h1>
     </tbody>
-    
 </table>
 
+<h2>Balance: @runningBalance.ToString("C")</h2>
