@@ -3,10 +3,10 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore;
 using eCoinAccountingApp.Data;
 using eCoinAccountingApp.Models;
+using Microsoft.AspNetCore.Mvc.RazorPages;
 
 namespace eCoinAccountingApp.Pages.Ledger
 {
@@ -19,7 +19,7 @@ namespace eCoinAccountingApp.Pages.Ledger
             _context = context;
         }
 
-        public IList<Models.Journal> Journals { get; set; } = default!;
+        public IList<JournalTransaction> LedgerTransactions { get; set; } = new List<JournalTransaction>();
 
         [BindProperty(SupportsGet = true)]
         public string SearchQuery { get; set; }
@@ -28,45 +28,48 @@ namespace eCoinAccountingApp.Pages.Ledger
         public string SortColumn { get; set; }
 
         [BindProperty(SupportsGet = true)]
-        public string SortOrder { get; set; } = "asc"; 
+        public string SortOrder { get; set; } = "asc";
 
         public async Task OnGetAsync()
         {
-            var query = _context.Journals
-                .Include(j => j.Account)
+            var query = _context.JournalTransactions
+                .Include(t => t.JournalEntry)
+                .Include(t => t.Account)
+                .Where(t => t.JournalEntry.Status == "Approved")
                 .AsQueryable();
 
             if (!string.IsNullOrWhiteSpace(SearchQuery))
             {
-                query = query.Where(j =>
-                    j.JournalNum.ToString().Contains(SearchQuery) ||         
-                    j.DateAdded.ToString().Contains(SearchQuery) ||          
-                    j.Account.AccountNumber.Contains(SearchQuery) ||        
-                    j.Account.AccountName.Contains(SearchQuery) ||           
-                    j.Account.NormalSide.Contains(SearchQuery) ||            
-                    j.Description.Contains(SearchQuery) ||                   
-                    j.Debit.ToString().Contains(SearchQuery) ||             
-                    j.Credit.ToString().Contains(SearchQuery));              
+                query = query.Where(t =>
+                    t.JournalEntry.JournalEntryId.ToString().Contains(SearchQuery) ||
+                    t.JournalEntry.DateAdded.ToString().Contains(SearchQuery) ||
+                    t.Account.AccountNumber.Contains(SearchQuery) ||
+                    t.Account.AccountName.Contains(SearchQuery) ||
+                    t.Account.NormalSide.Contains(SearchQuery) ||
+                    t.Description.Contains(SearchQuery) ||
+                    (t.Debit.HasValue && t.Debit.Value.ToString().Contains(SearchQuery)) ||
+                    (t.Credit.HasValue && t.Credit.Value.ToString().Contains(SearchQuery))
+                );
             }
 
-            query = SortJournals(query, SortColumn, SortOrder);
+            query = SortTransactions(query, SortColumn, SortOrder);
 
-            Journals = await query.ToListAsync();
+            LedgerTransactions = await query.ToListAsync();
         }
 
-        private IQueryable<Models.Journal> SortJournals(IQueryable<Models.Journal> query, string sortColumn, string sortOrder)
+        private IQueryable<JournalTransaction> SortTransactions(IQueryable<JournalTransaction> query, string sortColumn, string sortOrder)
         {
             return sortColumn switch
             {
-                "JournalNum" => sortOrder == "asc" ? query.OrderBy(j => j.JournalNum) : query.OrderByDescending(j => j.JournalNum),
-                "DateAdded" => sortOrder == "asc" ? query.OrderBy(j => j.DateAdded) : query.OrderByDescending(j => j.DateAdded),
-                "AccountNumber" => sortOrder == "asc" ? query.OrderBy(j => j.Account.AccountNumber) : query.OrderByDescending(j => j.Account.AccountNumber),
-                "AccountName" => sortOrder == "asc" ? query.OrderBy(j => j.Account.AccountName) : query.OrderByDescending(j => j.Account.AccountName),
-                "NormalSide" => sortOrder == "asc" ? query.OrderBy(j => j.Account.NormalSide) : query.OrderByDescending(j => j.Account.NormalSide),
-                "Description" => sortOrder == "asc" ? query.OrderBy(j => j.Description) : query.OrderByDescending(j => j.Description),
-                "Debit" => sortOrder == "asc" ? query.OrderBy(j => j.Debit) : query.OrderByDescending(j => j.Debit),
-                "Credit" => sortOrder == "asc" ? query.OrderBy(j => j.Credit) : query.OrderByDescending(j => j.Credit),
-                _ => query.OrderBy(j => j.JournalNum), // Default sort
+                "JournalEntryId" => sortOrder == "asc" ? query.OrderBy(t => t.JournalEntry.JournalEntryId) : query.OrderByDescending(t => t.JournalEntry.JournalEntryId),
+                "DateAdded" => sortOrder == "asc" ? query.OrderBy(t => t.JournalEntry.DateAdded) : query.OrderByDescending(t => t.JournalEntry.DateAdded),
+                "AccountNumber" => sortOrder == "asc" ? query.OrderBy(t => t.Account.AccountNumber) : query.OrderByDescending(t => t.Account.AccountNumber),
+                "AccountName" => sortOrder == "asc" ? query.OrderBy(t => t.Account.AccountName) : query.OrderByDescending(t => t.Account.AccountName),
+                "NormalSide" => sortOrder == "asc" ? query.OrderBy(t => t.Account.NormalSide) : query.OrderByDescending(t => t.Account.NormalSide),
+                "Description" => sortOrder == "asc" ? query.OrderBy(t => t.Description) : query.OrderByDescending(t => t.Description),
+                "Debit" => sortOrder == "asc" ? query.OrderBy(t => t.Debit) : query.OrderByDescending(t => t.Debit),
+                "Credit" => sortOrder == "asc" ? query.OrderBy(t => t.Credit) : query.OrderByDescending(t => t.Credit),
+                _ => query.OrderBy(t => t.JournalEntry.JournalEntryId),
             };
         }
     }

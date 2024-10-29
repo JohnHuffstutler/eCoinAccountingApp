@@ -8,80 +8,142 @@
     ViewData["Title"] = "Edit Journal Entry";
 
     var currentUser = await UserManager.GetUserAsync(User);
-    var isAdminOrManager = SignInManager.IsSignedIn(User) &&
-                           (currentUser.Role == "Admin" || currentUser.Role == "Manager");
+    var isAdminOrManager = User.IsInRole("Admin") || User.IsInRole("Manager");
 }
 
 <h1>Edit Journal Entry</h1>
 
-<div class="row">
-    <div class="col-md-4">
-        <form method="post">
-            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <input type="hidden" asp-for="Journal.JournalNum" />
+<form method="post">
+    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+    <input type="hidden" asp-for="JournalEntry.JournalEntryId" />
 
-            <div class="form-group">
-                <label asp-for="Journal.DateAdded" class="control-label"></label>
-                <input asp-for="Journal.DateAdded" class="form-control" readonly />
-                <span asp-validation-for="Journal.DateAdded" class="text-danger"></span>
-            </div>
-
-            <div class="form-group">
-                <label asp-for="Journal.Account.AccountName" class="control-label"></label>
-                <input asp-for="Journal.Account.AccountName" class="form-control" readonly />
-                <span asp-validation-for="Journal.Account.AccountName" class="text-danger"></span>
-            </div>
-
-            <div class="form-group">
-                <label asp-for="Journal.Description" class="control-label"></label>
-                <input asp-for="Journal.Description" class="form-control" />
-                <span asp-validation-for="Journal.Description" class="text-danger"></span>
-            </div>
-
-            <div class="form-group">
-                <label asp-for="Journal.Debit" class="control-label"></label>
-                <input asp-for="Journal.Debit" class="form-control" />
-                <span asp-validation-for="Journal.Debit" class="text-danger"></span>
-            </div>
-
-            <div class="form-group">
-                <label asp-for="Journal.Credit" class="control-label"></label>
-                <input asp-for="Journal.Credit" class="form-control" />
-                <span asp-validation-for="Journal.Credit" class="text-danger"></span>
-            </div>
-
-            @if (isAdminOrManager)
-            {
-                <!-- Status Dropdown visible to Admin/Manager roles -->
-                <div class="form-group">
-                    <label asp-for="Journal.Status" class="control-label">Status</label>
-                    <select asp-for="Journal.Status" class="form-control">
-                        <option value="Pending">Pending</option>
-                        <option value="Approved">Approved</option>
-                        <option value="Rejected">Rejected</option>
-                    </select>
-                    <span asp-validation-for="Journal.Status" class="text-danger"></span>
-                </div>
-            }
-            else
-            {
-                <!-- Hidden input to pass default Status if user is not Admin/Manager -->
-                <input type="hidden" asp-for="Journal.Status" value="Pending" />
-            }
-
-            <div class="form-group">
-                <input type="submit" value="Save" class="btn btn-primary" />
-            </div>
-        </form>
+    <!-- Date Added -->
+    <div class="form-group">
+        <label asp-for="JournalEntry.DateAdded" class="control-label"></label>
+        <input asp-for="JournalEntry.DateAdded" class="form-control" readonly />
     </div>
-</div>
 
-<div>
-    <a asp-page="Journal/Index">Back to List</a>
-</div>
+    <!-- Journal Entry Description -->
+    <div class="form-group">
+        <label asp-for="JournalEntry.Description" class="control-label">Journal Entry Description</label>
+        <input asp-for="JournalEntry.Description" class="form-control" />
+    </div>
+
+    <!-- Status Dropdown (only for Admin/Manager) -->
+    @if (isAdminOrManager)
+    {
+        <div class="form-group">
+            <label asp-for="JournalEntry.Status" class="control-label">Status</label>
+            <select asp-for="JournalEntry.Status" class="form-control">
+                <option value="Pending">Pending</option>
+                <option value="Approved">Approved</option>
+                <option value="Rejected">Rejected</option>
+            </select>
+        </div>
+    }
+    else
+    {
+        <input type="hidden" asp-for="JournalEntry.Status" />
+    }
+
+    <!-- Transactions Table -->
+    <h3>Transactions</h3>
+    <table class="table" id="transactionsTable">
+        <thead>
+            <tr>
+                <th>Account</th>
+                <th>Debit</th>
+                <th>Credit</th>
+                <th>Description</th>
+                <th>Action</th>
+            </tr>
+        </thead>
+        <tbody>
+            @for (int i = 0; i < Model.Transactions.Count; i++)
+            {
+                <tr>
+                    <td>
+                        <select asp-for="Transactions[@i].AccountId" class="form-control">
+                            <option value="">-- Select an Account --</option>
+                            @foreach (var account in Model.Accounts)
+                            {
+                                @if (account.Id == Model.Transactions[@i].AccountId)
+                                {
+                                    <option value="@account.Id" selected>@account.AccountName</option>
+                                }
+                                else
+                                {
+                                    <option value="@account.Id">@account.AccountName</option>
+                                }
+                            }
+
+                        </select>
+                        <input type="hidden" asp-for="Transactions[@i].JournalTransactionId" />
+                    </td>
+                    <td>
+                        <input asp-for="Transactions[@i].Debit" class="form-control" />
+                    </td>
+                    <td>
+                        <input asp-for="Transactions[@i].Credit" class="form-control" />
+                    </td>
+                    <td>
+                        <input asp-for="Transactions[@i].Description" class="form-control" />
+                    </td>
+                    <td>
+                        <button type="button" class="btn btn-danger" onclick="removeTransaction(this)">Remove</button>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+    <button type="button" class="btn btn-secondary" onclick="addTransaction()">Add Transaction</button>
+
+    <br /><br />
+
+    <!-- Submit Button -->
+    <div class="form-group">
+        <input type="submit" value="Save Changes" class="btn btn-primary" />
+        <a asp-page="/Journal/Index" class="btn btn-secondary">Cancel</a>
+    </div>
+</form>
 
 @section Scripts {
-    @{
-        await Html.RenderPartialAsync("_ValidationScriptsPartial");
-    }
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+
+    <script>
+        function addTransaction() {
+            var index = document.querySelectorAll('#transactionsTable tbody tr').length;
+            var row = `
+                <tr>
+                    <td>
+                        <select name="Transactions[${index}].AccountId" class="form-control">
+                            <option value="">-- Select an Account --</option>
+                            @foreach (var account in Model.Accounts)
+                            {
+                                <option value="@account.Id">@account.AccountName</option>
+                            }
+                        </select>
+                        <input type="hidden" name="Transactions[${index}].JournalTransactionId" value="0" />
+                    </td>
+                    <td>
+                        <input name="Transactions[${index}].Debit" class="form-control" />
+                    </td>
+                    <td>
+                        <input name="Transactions[${index}].Credit" class="form-control" />
+                    </td>
+                    <td>
+                        <input name="Transactions[${index}].Description" class="form-control" />
+                    </td>
+                    <td>
+                        <button type="button" class="btn btn-danger" onclick="removeTransaction(this)">Remove</button>
+                    </td>
+                </tr>
+            `;
+            $('#transactionsTable tbody').append(row);
+        }
+
+        function removeTransaction(button) {
+            $(button).closest('tr').remove();
+        }
+    </script>
 }

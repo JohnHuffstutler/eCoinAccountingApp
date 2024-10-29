@@ -1,4 +1,4 @@
-﻿@page "/Ledger/Index"
+﻿@page
 @model eCoinAccountingApp.Pages.Ledger.IndexModel
 
 @{
@@ -7,11 +7,6 @@
 
     string sortColumn = Model.SortColumn;
     string sortOrder = Model.SortOrder == "asc" ? "desc" : "asc";
-
-    // Filter to show only Approved journal entries
-    Model.Journals = Model.Journals
-        .Where(j => j.Status == "Approved")
-         .ToList();
 }
 
 <h1>Ledger</h1>
@@ -29,7 +24,7 @@
 <table class="table table-hover">
     <thead>
         <tr>
-            <th><a href="?sortColumn=JournalNum&sortOrder=@sortOrder">Post Reference</a></th>
+            <th><a href="?sortColumn=JournalEntryId&sortOrder=@sortOrder">Journal Entry ID</a></th>
             <th><a href="?sortColumn=DateAdded&sortOrder=@sortOrder">Date</a></th>
             <th><a href="?sortColumn=AccountNumber&sortOrder=@sortOrder">Account Number</a></th>
             <th><a href="?sortColumn=AccountName&sortOrder=@sortOrder">Account Name</a></th>
@@ -40,18 +35,18 @@
         </tr>
     </thead>
     <tbody>
-        @foreach (var item in Model.Journals)
+        @foreach (var item in Model.LedgerTransactions)
         {
-            runningBalance += item.Debit - item.Credit;
+            runningBalance += (item.Debit ?? 0) - (item.Credit ?? 0);
             <tr>
-                <td><a href="/Journal/Journal/Index?SearchQuery=@item.JournalNum">@item.JournalNum</a></td>
-                <td>@item.DateAdded.ToString("MM/dd/yyyy")</td>
+                <td><a href="/Journal/Details?id=@item.JournalEntry.JournalEntryId">@item.JournalEntry.JournalEntryId</a></td>
+                <td>@item.JournalEntry.DateAdded.ToString("MM/dd/yyyy")</td>
                 <td>@item.Account.AccountNumber</td>
                 <td>@item.Account.AccountName</td>
                 <td>@item.Account.NormalSide</td>
                 <td>@item.Description</td>
-                <td>@item.Debit.ToString("C")</td>
-                <td>@item.Credit.ToString("C")</td>
+                <td>@(item.Debit.HasValue ? item.Debit.Value.ToString("C") : "")</td>
+                <td>@(item.Credit.HasValue ? item.Credit.Value.ToString("C") : "")</td>
             </tr>
         }
     </tbody>

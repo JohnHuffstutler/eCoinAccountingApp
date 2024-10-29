@@ -17,7 +17,7 @@ namespace eCoinAccountingApp.Pages.Journal
         }
 
         [BindProperty]
-        public Models.Journal Journal { get; set; } = default!;
+        public Models.Journal JournalEntry { get; set; }
 
         public async Task<IActionResult> OnGetAsync(int? id)
         {
@@ -26,11 +26,12 @@ namespace eCoinAccountingApp.Pages.Journal
                 return NotFound();
             }
 
-            Journal = await _context.Journals
-                .Include(j => j.Account) 
-                .FirstOrDefaultAsync(m => m.JournalNum == id);
+            JournalEntry = await _context.Journals
+                .Include(j => j.Transactions)
+                    .ThenInclude(t => t.Account)
+                .FirstOrDefaultAsync(m => m.JournalEntryId == id);
 
-            if (Journal == null)
+            if (JournalEntry == null)
             {
                 return NotFound();
             }
@@ -45,11 +46,18 @@ namespace eCoinAccountingApp.Pages.Journal
                 return NotFound();
             }
 
-            Journal = await _context.Journals.FindAsync(id);
+            JournalEntry = await _context.Journals
+                .Include(j => j.Transactions)
+                .FirstOrDefaultAsync(j => j.JournalEntryId == id);
 
-            if (Journal != null)
+            if (JournalEntry != null)
             {
-                _context.Journals.Remove(Journal);
+                // Remove associated transactions
+                _context.JournalTransactions.RemoveRange(JournalEntry.Transactions);
+
+                // Remove the journal entry
+                _context.Journals.Remove(JournalEntry);
+
                 await _context.SaveChangesAsync();
             }
 

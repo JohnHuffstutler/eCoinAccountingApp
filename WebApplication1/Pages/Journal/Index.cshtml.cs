@@ -18,7 +18,7 @@ namespace eCoinAccountingApp.Pages.Journal
             _context = context;
         }
 
-        public IList<Models.Journal> Journals { get; set; } = default!;
+        public IList<Models.Journal> Journals { get; set; } = new List<Models.Journal>();
 
         [BindProperty(SupportsGet = true)]
         public string SearchQuery { get; set; }
@@ -32,21 +32,28 @@ namespace eCoinAccountingApp.Pages.Journal
         public async Task OnGetAsync()
         {
             var query = _context.Journals
-                .Include(j => j.Account)
+                .Include(j => j.Transactions)
+                    .ThenInclude(t => t.Account)
                 .AsQueryable();
 
+            // Search Logic
             if (!string.IsNullOrWhiteSpace(SearchQuery))
             {
                 query = query.Where(j =>
-                    j.JournalNum.ToString().Contains(SearchQuery) ||         
-                    j.DateAdded.ToString().Contains(SearchQuery) ||          
-                    j.Account.AccountName.Contains(SearchQuery) ||           
-                    j.Description.Contains(SearchQuery) ||                   
-                    j.Debit.ToString().Contains(SearchQuery) ||              
-                    j.Credit.ToString().Contains(SearchQuery) ||             
-                    j.Status.Contains(SearchQuery));                         
+                    j.JournalEntryId.ToString().Contains(SearchQuery) ||
+                    j.DateAdded.ToString().Contains(SearchQuery) ||
+                    j.Description.Contains(SearchQuery) ||
+                    j.Status.Contains(SearchQuery) ||
+                    j.Transactions.Any(t =>
+                        t.Account.AccountName.Contains(SearchQuery) ||
+                        t.Description.Contains(SearchQuery) ||
+                        t.Debit.ToString().Contains(SearchQuery) ||
+                        t.Credit.ToString().Contains(SearchQuery)
+                    )
+                );
             }
 
+            // Sorting Logic
             query = SortJournals(query, SortColumn, SortOrder);
 
             Journals = await query.ToListAsync();
@@ -54,28 +61,39 @@ namespace eCoinAccountingApp.Pages.Journal
 
         private IQueryable<Models.Journal> SortJournals(IQueryable<Models.Journal> query, string sortColumn, string sortOrder)
         {
-            return sortColumn switch
+            switch (sortColumn)
             {
-                "JournalNum" => sortOrder == "asc" ? query.OrderBy(j => j.JournalNum) : query.OrderByDescending(j => j.JournalNum),
-                "DateAdded" => sortOrder == "asc" ? query.OrderBy(j => j.DateAdded) : query.OrderByDescending(j => j.DateAdded),
-                "AccountName" => sortOrder == "asc" ? query.OrderBy(j => j.Account.AccountName) : query.OrderByDescending(j => j.Account.AccountName),
-                "Description" => sortOrder == "asc" ? query.OrderBy(j => j.Description) : query.OrderByDescending(j => j.Description),
-                "Debit" => sortOrder == "asc" ? query.OrderBy(j => j.Debit) : query.OrderByDescending(j => j.Debit),
-                "Credit" => sortOrder == "asc" ? query.OrderBy(j => j.Credit) : query.OrderByDescending(j => j.Credit),
-                "Status" => sortOrder == "asc" ? query.OrderBy(j => j.Status) : query.OrderByDescending(j => j.Status),
-                _ => query.OrderBy(j => j.JournalNum), // Default sort
-            };
+                case "JournalEntryId":
+                    query = sortOrder == "asc" ? query.OrderBy(j => j.JournalEntryId) : query.OrderByDescending(j => j.JournalEntryId);
+                    break;
+                case "DateAdded":
+                    query = sortOrder == "asc" ? query.OrderBy(j => j.DateAdded) : query.OrderByDescending(j => j.DateAdded);
+                    break;
+                case "Description":
+                    query = sortOrder == "asc" ? query.OrderBy(j => j.Description) : query.OrderByDescending(j => j.Description);
+                    break;
+                case "Status":
+                    query = sortOrder == "asc" ? query.OrderBy(j => j.Status) : query.OrderByDescending(j => j.Status);
+                    break;
+                default:
+                    query = query.OrderBy(j => j.JournalEntryId);
+                    break;
+            }
+            return query;
         }
 
         public async Task<IActionResult> OnPostDeleteAsync(int id)
         {
-            var journal = await _context.Journals.FindAsync(id);
-            if (journal == null)
+            var journalEntry = await _context.Journals
+                .Include(j => j.Transactions)
+                .FirstOrDefaultAsync(j => j.JournalEntryId == id);
+
+            if (journalEntry == null)
             {
                 return NotFound();
             }
 
-            _context.Journals.Remove(journal);
+            _context.Journals.Remove(journalEntry);
             await _context.SaveChangesAsync();
 
             return RedirectToPage();

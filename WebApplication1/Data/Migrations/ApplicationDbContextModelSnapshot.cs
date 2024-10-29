@@ -17,7 +17,7 @@ namespace eCoinAccountingApp.Data.Migrations
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "8.0.10")
+                .HasAnnotation("ProductVersion", "8.0.8")
                 .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
@@ -383,25 +383,20 @@ namespace eCoinAccountingApp.Data.Migrations
 
             modelBuilder.Entity("eCoinAccountingApp.Models.Journal", b =>
                 {
-                    b.Property<int>("JournalNum")
+                    b.Property<int>("JournalEntryId")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("JournalNum"));
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("JournalEntryId"));
 
-                    b.Property<int>("AccountId")
+                    b.Property<int?>("AccountId")
                         .HasColumnType("int");
-
-                    b.Property<decimal>("Credit")
-                        .HasColumnType("decimal(18, 2)");
 
                     b.Property<DateTime>("DateAdded")
                         .HasColumnType("datetime2");
 
-                    b.Property<decimal>("Debit")
-                        .HasColumnType("decimal(18, 2)");
-
                     b.Property<string>("Description")
+                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("DocumentPath")
@@ -412,11 +407,44 @@ namespace eCoinAccountingApp.Data.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.HasKey("JournalNum");
+                    b.HasKey("JournalEntryId");
 
                     b.HasIndex("AccountId");
 
                     b.ToTable("Journal", (string)null);
+                });
+
+            modelBuilder.Entity("eCoinAccountingApp.Models.JournalTransaction", b =>
+                {
+                    b.Property<int>("JournalTransactionId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("JournalTransactionId"));
+
+                    b.Property<int>("AccountId")
+                        .HasColumnType("int");
+
+                    b.Property<decimal?>("Credit")
+                        .HasColumnType("decimal(18, 2)");
+
+                    b.Property<decimal?>("Debit")
+                        .HasColumnType("decimal(18, 2)");
+
+                    b.Property<string>("Description")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("JournalEntryId")
+                        .HasColumnType("int");
+
+                    b.HasKey("JournalTransactionId");
+
+                    b.HasIndex("AccountId");
+
+                    b.HasIndex("JournalEntryId");
+
+                    b.ToTable("JournalTransactions");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
@@ -494,13 +522,28 @@ namespace eCoinAccountingApp.Data.Migrations
 
             modelBuilder.Entity("eCoinAccountingApp.Models.Journal", b =>
                 {
-                    b.HasOne("eCoinAccountingApp.Models.Account", "Account")
+                    b.HasOne("eCoinAccountingApp.Models.Account", null)
                         .WithMany("Journals")
+                        .HasForeignKey("AccountId");
+                });
+
+            modelBuilder.Entity("eCoinAccountingApp.Models.JournalTransaction", b =>
+                {
+                    b.HasOne("eCoinAccountingApp.Models.Account", "Account")
+                        .WithMany()
                         .HasForeignKey("AccountId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
+                    b.HasOne("eCoinAccountingApp.Models.Journal", "JournalEntry")
+                        .WithMany("Transactions")
+                        .HasForeignKey("JournalEntryId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
                     b.Navigation("Account");
+
+                    b.Navigation("JournalEntry");
                 });
 
             modelBuilder.Entity("eCoinAccountingApp.Models.Account", b =>
@@ -511,6 +554,11 @@ namespace eCoinAccountingApp.Data.Migrations
             modelBuilder.Entity("eCoinAccountingApp.Models.Company", b =>
                 {
                     b.Navigation("Accounts");
+                });
+
+            modelBuilder.Entity("eCoinAccountingApp.Models.Journal", b =>
+                {
+                    b.Navigation("Transactions");
                 });
 #pragma warning restore 612, 618
         }

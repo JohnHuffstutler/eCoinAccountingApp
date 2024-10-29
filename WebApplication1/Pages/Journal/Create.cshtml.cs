@@ -1,101 +1,74 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
-using Microsoft.EntityFrameworkCore;
 using eCoinAccountingApp.Data;
 using eCoinAccountingApp.Models;
-using eCoinAccountingApp.Services;
-using System.ComponentModel;
+using System.Collections.Generic;
+using System.Threading.Tasks;
+using System.Linq;
+using Microsoft.EntityFrameworkCore;
 using System.IO;
-using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.Identity.UI.Services;
+using Microsoft.AspNetCore.Http;
 
 namespace eCoinAccountingApp.Pages.Journal
 {
     public class CreateModel : PageModel
     {
         private readonly ApplicationDbContext _context;
-        private readonly EventLogger _eventLogger;
-        private readonly IEmailSender _emailSender;
-        private readonly UserManager<ApplicationUser> _userManager;
 
-        public CreateModel(ApplicationDbContext context, EventLogger eventLogger, IEmailSender emailSender, UserManager<ApplicationUser> userManager)
+        public CreateModel(ApplicationDbContext context)
         {
             _context = context;
-            _eventLogger = eventLogger;
-            _emailSender = emailSender;
-            _userManager = userManager;
         }
 
-        // Property for dropdown list of accounts
         public List<Models.Account> Accounts { get; set; }
 
         [BindProperty]
-        public Models.Journal Journal { get; set; } = default!;
+        public Models.Journal JournalEntry { get; set; } = new Models.Journal();
 
         [BindProperty]
-        public int SelectedAccountId { get; set; }  // Stores selected account ID from dropdown
+        public List<JournalTransaction> Transactions { get; set; } = new List<JournalTransaction>();
 
         [BindProperty]
         public IFormFile UploadedDocument { get; set; } // For file uploads
 
-
         public async Task<IActionResult> OnGetAsync()
         {
-            // Populate the dropdown with available accounts from chart of accounts
             Accounts = await _context.Accounts.ToListAsync();
-            Journal = new Models.Journal
-            {
-                DateAdded = DateTime.Now  // Set the date automatically to the current date
-            };
+            JournalEntry.DateAdded = DateTime.Now;
+            // Initialize with one empty transaction
+            Transactions.Add(new JournalTransaction());
             return Page();
         }
 
         public async Task<IActionResult> OnPostAsync()
         {
-            // Repopulate the dropdown list on post
             Accounts = await _context.Accounts.ToListAsync();
 
-            // Validate that an account is selected and either Debit or Credit is filled (but not both)
-            if (SelectedAccountId == 0)
-            {
-                ModelState.AddModelError("SelectedAccountId", "Please select an account.");
-            }
-            if (Journal.Debit == 0 && Journal.Credit == 0)
-            {
-                ModelState.AddModelError("Journal.Debit", "Enter a value for either Debit or Credit.");
-            }
-            if (Journal.Debit != 0 && Journal.Credit != 0)
-            {
-                ModelState.AddModelError("Journal.Debit", "Only one of Debit or Credit can be filled.");
-            }
-                  
-            ModelState.Remove("Journal.Account");
-            ModelState.Remove("Journal.Description");
+            // Remove empty transactions
+            Transactions = Transactions
+                .Where(t => t.AccountId != 0 && (t.Debit != null || t.Credit != null))
+                .ToList();
 
-            if (!ModelState.IsValid)
+            // Validate that total debits equal total credits
+            decimal totalDebit = Transactions.Sum(t => t.Debit ?? 0);
+            decimal totalCredit = Transactions.Sum(t => t.Credit ?? 0);
+
+            if (totalDebit != totalCredit)
             {
-                return Page();
+                ModelState.AddModelError(string.Empty, "Total debits must equal total credits.");
             }
-
-            // Set the account and user data
-            Journal.AccountId = SelectedAccountId;
-            Journal.DateAdded = DateTime.Now;
-
-            // File upload handling
             if (UploadedDocument != null && UploadedDocument.Length > 0)
             {
                 string fileName = Path.GetFileName(UploadedDocument.FileName);
-                string filePath = Path.Combine("wwwroot/uploads", fileName); // Update this path as needed
+                string uploadsFolder = Path.Combine("wwwroot", "uploads");
 
                 // Ensure the uploads directory exists
-                if (!Directory.Exists(Path.Combine("wwwroot", "uploads")))
+                if (!Directory.Exists(uploadsFolder))
                 {
-                    Directory.CreateDirectory(Path.Combine("wwwroot", "uploads"));
+                    Directory.CreateDirectory(uploadsFolder);
                 }
+
+                string filePath = Path.Combine(uploadsFolder, fileName);
 
                 using (var stream = new FileStream(filePath, FileMode.Create))
                 {
@@ -103,28 +76,29 @@ namespace eCoinAccountingApp.Pages.Journal
                 }
 
                 // Save only the relative path (without wwwroot)
-                Journal.DocumentPath = "uploads/" + fileName; 
-                
+                JournalEntry.DocumentPath = Path.Combine("uploads", fileName);
             }
-
-            // Save the journal entry
-            _context.Journals.Add(Journal);
-            await _context.SaveChangesAsync();  
-
-            // Log the event with a description of the action
-            var description = $"Created journal entry for account {Journal.AccountId} with {(Journal.Debit != 0 ? $"Debit: {Journal.Debit}" : $"Credit: {Journal.Credit}")}";
-            await _eventLogger.LogEventAsync(description, User?.Identity?.Name);
-
-            var adminUsers = await _userManager.Users.Where(u => u.Role == "Admin").ToListAsync();
-            foreach (var admin in adminUsers)
+            ModelState.Remove("JournalEntry.DocumentPath");
+            if (!ModelState.IsValid)
             {
-                var subject = "Journal Entry Submitted for Approval";
-                var message = $"Journal Entry: \"{Journal.Description}\" has been submitted for approval.";
-                await _emailSender.SendEmailAsync(admin.Email, subject, message);
+                return Page();
             }
+
+            // Handle file upload
+            
+
+            // Save the journal entry and transactions
+            _context.Journals.Add(JournalEntry);
+            await _context.SaveChangesAsync();
+
+            foreach (var transaction in Transactions)
+            {
+                transaction.JournalEntryId = JournalEntry.JournalEntryId;
+                _context.JournalTransactions.Add(transaction);
+            }
+            await _context.SaveChangesAsync();
 
             return RedirectToPage("/Journal/Index");
         }
     }
 }
-    

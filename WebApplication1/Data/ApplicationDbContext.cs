@@ -14,6 +14,7 @@ namespace eCoinAccountingApp.Data
         public DbSet<Company> Companies { get; set; }
 
         public DbSet<Journal> Journals { get; set; }
+        public DbSet<JournalTransaction> JournalTransactions { get; set; }
         public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options)
             : base(options)
         {

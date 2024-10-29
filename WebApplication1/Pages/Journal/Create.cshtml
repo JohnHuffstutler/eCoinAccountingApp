@@ -7,87 +7,126 @@
 
 <h1>Create Journal Entry</h1>
 
-<div class="row">
-    <div class="col-md-4">
-        <form method="post" enctype="multipart/form-data">
-            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+<form method="post" enctype="multipart/form-data">
+    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
 
-            <!-- Account Selection Dropdown -->
-            <div class="form-group">
-                <label for="SelectedAccountId" class="control-label">Account</label>
-                <select id="SelectedAccountId" name="SelectedAccountId" class="form-control" asp-for="Journal.AccountId">
-                    <option value="">-- Select an Account --</option>
-                    @foreach (var account in Model.Accounts)
-                    {
-                        <option value="@account.Id">@account.AccountName</option>
-                    }
-                </select>
-                <span asp-validation-for="Journal.AccountId" class="text-danger"></span>
-            </div>
-
-            <!-- Date Added: Automatically populated with current date -->
-            <div class="form-group">
-                <label asp-for="Journal.DateAdded" class="control-label">Date</label>
-                <input asp-for="Journal.DateAdded" class="form-control" readonly />
-            </div>
-
-            <div class="form-group">
-                <label asp-for="Journal.Description" class="control-label">Description</label>
-                <input asp-for="Journal.Description" class="form-control" />
-            </div>
-
-            <!-- Debit and Credit Fields with Validation -->
-            <div class="form-group">
-                <label asp-for="Journal.Debit" class="control-label">Debit</label>
-                <input asp-for="Journal.Debit" class="form-control" />
-                <span asp-validation-for="Journal.Debit" class="text-danger"></span>
-            </div>
-
-            <!--Add An Additional Debit Field
-            <div>
-                <button class="add-more" type="button">Add another debit</button>
-            </div>-->
-
-            <div class="form-group">
-                <label asp-for="Journal.Credit" class="control-label">Credit</label>
-                <input asp-for="Journal.Credit" class="form-control" />
-                <span asp-validation-for="Journal.Credit" class="text-danger"></span>
-            </div>
-
-            <!--Add An Additional Credit Field
-            <div>
-                <button class="add-more" type="button">Add another credit</button>
-            </div>-->
-
-            <!--Attach Document-->
-            <div class="form-group">
-                <label asp-for="Journal.DocumentPath" class="control-label">Attach Document</label>
-                <input type="file" name="UploadedDocument" class="form-control" />
-                <span asp-validation-for="Journal.DocumentPath" class="text-danger"></span>
-            </div>
-
-
-            <!-- Status Dropdown-->
-            <div class="form-group">
-                <label asp-for="Journal.Status" class="control-label">Status</label>
-                <select asp-for="Journal.Status" class="form-control">
-                    <option value="Pending">Pending</option>
-                    <option value="Approved">Approved</option>
-                    <option value="Rejected">Rejected</option>
-                </select>
-                <span asp-validation-for="Journal.Status" class="text-danger"></span>
-            </div>            
-
-            <!-- Submit Button -->
-            <div class="form-group">
-                <input type="submit" value="Create" class="btn btn-primary" />
-            </div>
-        </form>
+    <!-- Date Added -->
+    <div class="form-group">
+        <label asp-for="JournalEntry.DateAdded" class="control-label">Date</label>
+        <input asp-for="JournalEntry.DateAdded" class="form-control" readonly />
     </div>
-</div>
+
+    <!-- Journal Entry Description -->
+    <div class="form-group">
+        <label asp-for="JournalEntry.Description" class="control-label">Journal Entry Description</label>
+        <input asp-for="JournalEntry.Description" class="form-control" />
+    </div>
+
+    <!-- Status Dropdown -->
+    <div class="form-group">
+        <label asp-for="JournalEntry.Status" class="control-label">Status</label>
+        <select asp-for="JournalEntry.Status" class="form-control">
+            <option value="Pending">Pending</option>
+            <option value="Approved">Approved</option>
+            <option value="Rejected">Rejected</option>
+        </select>
+    </div>
+
+    <!-- Attach Document -->
+    <div class="form-group">
+        <label asp-for="JournalEntry.DocumentPath" class="control-label">Attach Document</label>
+        <input type="file" name="UploadedDocument" class="form-control" />
+    </div>
+
+    <!-- Transactions Table -->
+    <h3>Transactions</h3>
+    <table class="table" id="transactionsTable">
+        <thead>
+            <tr>
+                <th>Account</th>
+                <th>Debit</th>
+                <th>Credit</th>
+                <th>Description</th>
+                <th>Action</th>
+            </tr>
+        </thead>
+        <tbody>
+            @for (int i = 0; i < Model.Transactions.Count; i++)
+            {
+                <tr>
+                    <td>
+                        <select asp-for="Transactions[@i].AccountId" class="form-control">
+                            <option value="">-- Select an Account --</option>
+                            @foreach (var account in Model.Accounts)
+                            {
+                                <option value="@account.Id">@account.AccountName</option>
+                            }
+                        </select>
+                    </td>
+                    <td>
+                        <input asp-for="Transactions[@i].Debit" class="form-control" />
+                    </td>
+                    <td>
+                        <input asp-for="Transactions[@i].Credit" class="form-control" />
+                    </td>
+                    <td>
+                        <input asp-for="Transactions[@i].Description" class="form-control" />
+                    </td>
+                    <td>
+                        <button type="button" class="btn btn-danger" onclick="removeTransaction(this)">Remove</button>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+    <button type="button" class="btn btn-secondary" onclick="addTransaction()">Add Transaction</button>
+
+    <br /><br />
+
+    <!-- Submit Button -->
+    <div class="form-group">
+        <input type="submit" value="Create Journal Entry" class="btn btn-primary" />
+    </div>
+</form>
 
 @section Scripts {
     @{
         await Html.RenderPartialAsync("_ValidationScriptsPartial");
     }
+
+    <script>
+        function addTransaction() {
+            var index = document.querySelectorAll('#transactionsTable tbody tr').length;
+            var row = `
+                        <tr>
+                            <td>
+                                <select name="Transactions[${index}].AccountId" class="form-control">
+                                    <option value="">-- Select an Account --</option>
+        @foreach (var account in Model.Accounts)
+        {
+                                            <option value="@account.Id">@account.AccountName</option>
+        }
+                                </select>
+                            </td>
+                            <td>
+                                <input name="Transactions[${index}].Debit" class="form-control" />
+                            </td>
+                            <td>
+                                <input name="Transactions[${index}].Credit" class="form-control" />
+                            </td>
+                            <td>
+                                <input name="Transactions[${index}].Description" class="form-control" />
+                            </td>
+                            <td>
+                                <button type="button" class="btn btn-danger" onclick="removeTransaction(this)">Remove</button>
+                            </td>
+                        </tr>
+                    `;
+            $('#transactionsTable tbody').append(row);
+        }
+
+        function removeTransaction(button) {
+            $(button).closest('tr').remove();
+        }
+    </script>
 }
