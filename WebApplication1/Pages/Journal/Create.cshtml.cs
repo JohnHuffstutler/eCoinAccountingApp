@@ -10,18 +10,24 @@ using eCoinAccountingApp.Models;
 using eCoinAccountingApp.Services;
 using System.ComponentModel;
 using System.IO;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity.UI.Services;
 
 namespace eCoinAccountingApp.Pages.Journal
 {
     public class CreateModel : PageModel
     {
         private readonly ApplicationDbContext _context;
-        private readonly EventLogger _eventLogger;  // Assuming EventLogger is a service to log events
+        private readonly EventLogger _eventLogger;
+        private readonly IEmailSender _emailSender;
+        private readonly UserManager<ApplicationUser> _userManager;
 
-        public CreateModel(ApplicationDbContext context, EventLogger eventLogger)
+        public CreateModel(ApplicationDbContext context, EventLogger eventLogger, IEmailSender emailSender, UserManager<ApplicationUser> userManager)
         {
             _context = context;
             _eventLogger = eventLogger;
+            _emailSender = emailSender;
+            _userManager = userManager;
         }
 
         // Property for dropdown list of accounts
@@ -108,6 +114,14 @@ namespace eCoinAccountingApp.Pages.Journal
             // Log the event with a description of the action
             var description = $"Created journal entry for account {Journal.AccountId} with {(Journal.Debit != 0 ? $"Debit: {Journal.Debit}" : $"Credit: {Journal.Credit}")}";
             await _eventLogger.LogEventAsync(description, User?.Identity?.Name);
+
+            var adminUsers = await _userManager.Users.Where(u => u.Role == "Admin").ToListAsync();
+            foreach (var admin in adminUsers)
+            {
+                var subject = "Journal Entry Submitted for Approval";
+                var message = $"Journal Entry: \"{Journal.Description}\" has been submitted for approval.";
+                await _emailSender.SendEmailAsync(admin.Email, subject, message);
+            }
 
             return RedirectToPage("/Journal/Index");
         }

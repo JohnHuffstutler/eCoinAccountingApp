@@ -144,19 +144,34 @@ namespace eCoinAccountingApp.Pages.Account
                 return Page();
             }
 
-            var adminAndManagerUsers = await _userManager.Users
-                .Where(user => user.Role == "Admin" || user.Role == "Manager")
-                .ToListAsync();
+            var currentUser = await _userManager.GetUserAsync(User);
+            if (currentUser == null)
+            {
+                return Unauthorized();
+            }
 
-            foreach (var user in adminAndManagerUsers)
+            List<ApplicationUser> recipients;
+            if (currentUser.Role == "Admin" || currentUser.Role == "Manager")
+            {
+                recipients = await _userManager.Users
+                    .Where(user => user.Role == "User")
+                    .ToListAsync();
+            }
+            else
+            {
+                recipients = await _userManager.Users
+                    .Where(user => user.Role == "Admin" || user.Role == "Manager")
+                    .ToListAsync();
+            }
+
+            foreach (var user in recipients)
             {
                 await _emailSender.SendEmailAsync(user.Email, Subject, Body);
             }
 
-            var currentUser = await _userManager.GetUserAsync(User);
-            await _eventLogger.LogEventAsync($"Sent email to admins and managers with subject: '{Subject}'", currentUser.Id);
+            await _eventLogger.LogEventAsync($"Sent email with subject: '{Subject}'", currentUser.Id);
 
-            return RedirectToPage(new { SelectedCompanyId });
+            return RedirectToPage(new { SelectedCompanyId = SelectedCompanyId });
         }
     }
 }

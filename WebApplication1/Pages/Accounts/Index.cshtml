@@ -7,30 +7,20 @@
 @{
     var currentUser = await UserManager.GetUserAsync(User);
     var isAdmin = SignInManager.IsSignedIn(User) && currentUser.Role == "Admin";
-
+    var emailModalTitle = isAdmin ? "Send Email to Users" : "Send Email to Admins & Managers";
     string sortColumn = Model.SortColumn;
     string sortOrder = Model.SortOrder == "asc" ? "desc" : "asc"; 
 }
 
 <h1>User Type: @currentUser.Role</h1>
 
-<button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#emailModal">Send Email</button>
-
-@if (isAdmin)
-{
-    <span class="tt" data-bs-placement="bottom" title="Add a new account to the chart of accounts.">
-        <a href="/Accounts/Create" class="btn btn-primary">Create Account</a>
-    </span>
-    <span class="tt" data-bs-placement="bottom" title="Add a new company to the chart of accounts.">
-        <a href="/Companies/Create" class="btn btn-primary">Create Company</a>
-    </span>
-}
+<button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#emailModal">@emailModalTitle</button>
 
 <div class="modal fade" id="emailModal" tabindex="-1" aria-labelledby="emailModalLabel" aria-hidden="true">
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title" id="emailModalLabel">Send Email to Admin & Managers</h5>
+                <h5 class="modal-title" id="emailModalLabel">@emailModalTitle</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <form method="post" asp-page-handler="SendEmail">
