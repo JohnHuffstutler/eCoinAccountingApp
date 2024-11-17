@@ -1,0 +1,146 @@
+﻿@page
+@model eCoinAccountingApp.Pages.Account.IndexModel
+@using Microsoft.AspNetCore.Identity
+@inject UserManager<ApplicationUser> UserManager
+@inject SignInManager<ApplicationUser> SignInManager
+
+@{
+    var currentUser = await UserManager.GetUserAsync(User);
+    var isAdmin = SignInManager.IsSignedIn(User) && currentUser.Role == "Admin";
+    var emailModalTitle = isAdmin ? "Send Email to Users" : "Send Email to Admins & Managers";
+    string sortColumn = Model.SortColumn;
+    string sortOrder = Model.SortOrder == "asc" ? "desc" : "asc"; 
+}
+
+<h1>User Type: @currentUser.Role</h1>
+
+<button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#emailModal">@emailModalTitle</button>
+
+<div class="modal fade" id="emailModal" tabindex="-1" aria-labelledby="emailModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="emailModalLabel">@emailModalTitle</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <form method="post" asp-page-handler="SendEmail">
+                <div class="modal-body">
+                    <div class="form-group">
+                        <label for="emailSubject">Subject</label>
+                        <input type="text" id="emailSubject" name="Subject" class="form-control" required />
+                    </div>
+                    <div class="form-group">
+                        <label for="emailBody">Body</label>
+                        <textarea id="emailBody" name="Body" class="form-control" rows="5" required></textarea>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="submit" class="btn btn-primary">Send Email</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<form method="get">
+    <div class="form-group">
+        <label for="SelectedCompanyId">Select Company:</label>
+        <select id="SelectedCompanyId" name="SelectedCompanyId" class="form-control" onchange="this.form.submit()">
+            <option value="">-- Select a Company --</option>
+            @foreach (var company in Model.Companies)
+            {
+                <option value="@company.Id" selected="@(company.Id == Model.SelectedCompanyId)"> @company.CompanyName </option>
+            }
+        </select>
+    </div>
+
+    @if (Model.SelectedCompanyId.HasValue)
+    {
+        <div class="form-group mt-2">
+            <label for="SearchQuery">Search Account:</label>
+            <input type="text" id="SearchQuery" name="SearchQuery" class="form-control" placeholder="Search by account name or number..." value="@Model.SearchQuery" />
+        </div>
+
+        <button type="submit" class="btn btn-primary mt-2">Search</button>
+    }
+</form>
+
+<br />
+
+@if (Model.SelectedCompanyId.HasValue && Model.SelectedCompanyAccounts.Count > 0)
+{
+    <table class="table table-hover">
+        <thead>
+            <tr>
+                <th><a href="?SelectedCompanyId=@Model.SelectedCompanyId&sortColumn=AccountName&sortOrder=@sortOrder">Account Name</a></th>
+                <th><a href="?SelectedCompanyId=@Model.SelectedCompanyId&sortColumn=AccountNumber&sortOrder=@sortOrder">Account Number</a></th>
+                <th><a href="?SelectedCompanyId=@Model.SelectedCompanyId&sortColumn=AccountDescription&sortOrder=@sortOrder">Description</a></th>
+                <th><a href="?SelectedCompanyId=@Model.SelectedCompanyId&sortColumn=NormalSide&sortOrder=@sortOrder">Normal Side</a></th>
+                <th><a href="?SelectedCompanyId=@Model.SelectedCompanyId&sortColumn=AccountCategory&sortOrder=@sortOrder">Category</a></th>
+                <th><a href="?SelectedCompanyId=@Model.SelectedCompanyId&sortColumn=InitialBalance&sortOrder=@sortOrder">Initial Balance</a></th>
+                <th><a href="?SelectedCompanyId=@Model.SelectedCompanyId&sortColumn=Debit&sortOrder=@sortOrder">Debit</a></th>
+                <th><a href="?SelectedCompanyId=@Model.SelectedCompanyId&sortColumn=Credit&sortOrder=@sortOrder">Credit</a></th>
+                <th><a href="?SelectedCompanyId=@Model.SelectedCompanyId&sortColumn=Balance&sortOrder=@sortOrder">Balance</a></th>
+                <th><a href="?SelectedCompanyId=@Model.SelectedCompanyId&sortColumn=DateAdded&sortOrder=@sortOrder">Date Added</a></th>
+                <th><a href="?SelectedCompanyId=@Model.SelectedCompanyId&sortColumn=Statement&sortOrder=@sortOrder">Statement</a></th>
+                <th><a href="?SelectedCompanyId=@Model.SelectedCompanyId&sortColumn=Order&sortOrder=@sortOrder">Order</a></th>
+                <th><a href="?SelectedCompanyId=@Model.SelectedCompanyId&sortColumn=Comment&sortOrder=@sortOrder">Comment</a></th>
+                <th><a href="?SelectedCompanyId=@Model.SelectedCompanyId&sortColumn=UserId&sortOrder=@sortOrder">User ID</a></th>
+
+                @if (isAdmin)
+                {
+                    <th>Edit</th>
+                    <th>Delete</th>
+                }
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var account in Model.SelectedCompanyAccounts)
+            {
+                <tr>
+                    <td><a href="/Ledger/Index?SearchQuery=@account.AccountName">@account.AccountName</a></td>
+                    <td>@account.AccountNumber</td>
+                    <td>@account.AccountDescription</td>
+                    <td>@account.NormalSide</td>
+                    <td>@account.AccountCategory</td>
+                    <td>@account.InitialBalance.ToString("C")</td>
+                    <td>@account.Debit.ToString("C")</td>
+                    <td>@account.Credit.ToString("C")</td>
+                    <td>@account.Balance.ToString("C")</td>
+                    <td>@account.DateAdded.ToString("MM/dd/yyyy HH:mm")</td>
+                    <td>@account.Statement</td>
+                    <td>@account.Order</td>
+                    <td>@account.Comment</td>
+                    <td>@account.UserId</td>
+
+                    @if (isAdmin)
+                    {
+                        <td>
+                            <span class="tt" data-bs-placement="bottom" title="Make changes to account.">
+                                <a href="/Accounts/Edit/@account.Id" class="btn btn-primary">Edit</a>
+                            </span>
+                        </td>
+                        <td>
+                            <form method="post" asp-page-handler="Delete" asp-route-id="@account.Id" style="display:inline;" onsubmit="return confirmDelete();">
+                                <span class="tt" data-bs-placement="bottom" title="Deactivate account.">
+                                    <button type="submit" class="btn btn-danger">Deactivate</button>
+                                </span>
+                            </form>
+                        </td>
+                    }
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+else if (Model.SelectedCompanyId.HasValue)
+{
+    <p>No accounts found for the selected company.</p>
+}
+
+<script type="text/javascript">
+    function confirmDelete() {
+        return confirm("Are you sure you want to deactivate this account?");
+    }
+</script>

@@ -108,12 +108,20 @@ namespace eCoinAccountingApp.Areas.Identity.Pages.Account
                 string username = $"{Input.FirstName[0]}{Input.LastName}{DateTime.Now:MMdd}";
                 await _userStore.SetUserNameAsync(user, username, CancellationToken.None);
                 await _emailStore.SetEmailAsync(user, Input.Email, CancellationToken.None);
-
+                var usersCount = _userManager.Users.Count();
                 user.FirstName = Input.FirstName; 
                 user.LastName = Input.LastName;  
                 user.DateOfBirth = Input.DateOfBirth;
                 user.Address = Input.Address;
                 user.PasswordExpirationDate = DateTime.UtcNow.AddDays(90);
+                if (usersCount == 0)
+                {
+                    user.Role = "Admin";
+                }
+                else
+                {
+                    user.Role = "User";
+                }
 
                 var result = await _userManager.CreateAsync(user, Input.Password);
 
@@ -121,7 +129,6 @@ namespace eCoinAccountingApp.Areas.Identity.Pages.Account
                 {
                     _logger.LogInformation("User created a new account with password.");
 
-                    var usersCount = _userManager.Users.Count();
                     if (usersCount == 1)
                     {
                         await _userManager.AddToRoleAsync(user, "Admin");

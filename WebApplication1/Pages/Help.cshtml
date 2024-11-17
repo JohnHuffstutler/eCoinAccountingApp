@@ -1,0 +1,32 @@
+﻿@page
+@model eCoinAccountingApp.Pages.HelpModel
+@{
+    ViewData["Title"] = "Help";
+}
+<head>
+<h1>@ViewData["Title"]</h1>
+
+<p>This is the help page. It contains information about the software organized by topic.</p>
+</head>
+    <br />
+
+<body>
+    <h3>What is the eCoin Accounting App?</h3>
+    <p>The eCoin Accounting App is designed to streamline accounting for businesses.</p>
+    <br />
+    <h3>Registration/Log In</h3>
+    <p>There are three types of accounts: regular users, managers, and administrators. Administrators can create, modify, and delete users and user information directly from the app. These changes will sync in real time with the database. To create an account, a user must use the Register button. The user will fill in the requested information and submit an application to register. The administrator receives an email request and will approve or reject the request. If the administrator approves. An email will be sent to the user with a link to log in to the system. A forgot password option is available for users who may have forgotten their password. This feature will send an email to users to ask security questions to verify the password reset.</p>
+    <br />
+    <h3>Chart of Accounts</h3>
+    <p>Users can view accounts in the chart of accounts. Administrators have the ability to add, edit, and deactivate accounts, while the rest don’t have access to that. Event Logs keep track of changes made to any data on the website. This is helpful as all the users have access to it and are able keep track of any changes to be able to retrace steps taken, regardless of what account it was made in.</p>
+    <br />
+    <h3>Journalizing / Ledger</h3>
+    <p>Users are able to keep records and documentations of business accountings. This is thoroughly detailed and concise as it contains the transactions that affect both the accounts and the balances. It is recorded after every transaction and includes the date, the account being credited or debited, and a brief description of the transaction.</p>
+    <br />
+    <h3>Adjusting Entries and Financial Reports</h3>
+    <p>To ensure accurate financial reporting, the users are able to update accounts, correct errors, and allocate revenues and expenses properly within adjusting entries and financial reports. This gives clear and correct financial position of the account/company before giving generating financial statements.</p>
+    <br />
+    <h3>Financial Ratios and Dashboard</h3>
+    <p>The financial ratios and dashboard help the users understand a company's performance over time and identify important potential issues. The financial ratios measure the relationship between two or more components of financial statements. The comparison of these ratios with outside competitors leads to insight on improvements and more.</p>
+    <br />
+</body>
