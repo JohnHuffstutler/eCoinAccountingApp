@@ -175,27 +175,60 @@ namespace eCoinAccountingApp.Pages.Account
 
             return RedirectToPage(new { SelectedCompanyId = SelectedCompanyId });
         }
-        public async Task<IActionResult> OnPostPrintJournalEntriesAsync(int AccountId, DateTime StartDate, DateTime EndDate)
+        public async Task<IActionResult> OnPostPrintTrialBalanceAsync(DateTime StartDate, DateTime EndDate)
         {
+            // Validate the date range
             if (StartDate > EndDate)
             {
                 ModelState.AddModelError(string.Empty, "Start Date cannot be greater than End Date.");
                 return Page();
             }
 
+            // Check if company is selected
+            if (!SelectedCompanyId.HasValue)
+            {
+                TempData["Message"] = "Please select a company.";
+                return RedirectToPage();
+            }
+
+            // Fetch all accounts for the selected company
+            var accounts = await _context.Accounts
+                .Where(a => a.CompanyId == SelectedCompanyId.Value)
+                .ToListAsync();
+
+            // If no accounts exist for the selected company, return an error
+            if (accounts.Count == 0)
+            {
+                TempData["Message"] = "No accounts found for the selected company.";
+                return RedirectToPage();
+            }
+
+            // Fetch journal entries for the selected accounts within the date range
             var journalEntries = await _context.Journals
+                .Where(j => j.DateAdded >= StartDate && j.DateAdded <= EndDate &&
+                            accounts.Select(a => a.Id).Contains(j.AccountId))
                 .Include(j => j.Account)
-                .Where(j => j.AccountId == AccountId && j.DateAdded >= StartDate && j.DateAdded <= EndDate)
                 .OrderBy(j => j.DateAdded)
                 .ToListAsync();
 
+            // If no journal entries exist, show a message
             if (!journalEntries.Any())
             {
                 TempData["Message"] = "No journal entries found for the selected date range.";
                 return RedirectToPage();
             }
 
-            string htmlContent = GenerateHtmlForPdf(journalEntries, StartDate, EndDate);
+            // Calculate trial balance data
+            var trialBalance = accounts.Select(account => new TrialBalance
+            {
+                AccountNumber = account.AccountNumber,
+                AccountName = account.AccountName,
+                Debit = journalEntries.Where(j => j.AccountId == account.Id && j.Debit > 0).Sum(j => j.Debit),
+                Credit = journalEntries.Where(j => j.AccountId == account.Id && j.Credit > 0).Sum(j => j.Credit)
+            }).ToList();
+
+            // Generate the PDF with the trial balance data
+            string htmlContent = GenerateHtmlForTrialBalancePdf(trialBalance, StartDate, EndDate);
 
             var converter = new SynchronizedConverter(new PdfTools());
             var pdfDocument = new HtmlToPdfDocument
@@ -216,57 +249,257 @@ namespace eCoinAccountingApp.Pages.Account
 
             var pdfBytes = converter.Convert(pdfDocument);
 
-            return File(pdfBytes, "application/pdf", "JournalEntries.pdf");
+            return File(pdfBytes, "application/pdf", "TrialBalance.pdf");
         }
 
-        private string GenerateHtmlForPdf(List<Models.Journal> journalEntries, DateTime startDate, DateTime endDate)
+        public async Task<IActionResult> OnPostPrintBalanceSheetAsync(DateTime StartDate, DateTime EndDate)
         {
+            // Validate the date range
+            if (StartDate > EndDate)
+            {
+                ModelState.AddModelError(string.Empty, "Start Date cannot be greater than End Date.");
+                return Page();
+            }
+
+            // Check if company is selected
+            if (!SelectedCompanyId.HasValue)
+            {
+                TempData["Message"] = "Please select a company.";
+                return RedirectToPage();
+            }
+
+            // Fetch all accounts for the selected company
+            var accounts = await _context.Accounts
+                .Where(a => a.CompanyId == SelectedCompanyId.Value)
+                .ToListAsync();
+
+            // If no accounts exist for the selected company, return an error
+            if (accounts.Count == 0)
+            {
+                TempData["Message"] = "No accounts found for the selected company.";
+                return RedirectToPage();
+            }
+
+            // Fetch journal entries for the selected accounts within the date range
+            var journalEntries = await _context.Journals
+                .Where(j => j.DateAdded >= StartDate && j.DateAdded <= EndDate &&
+                            accounts.Select(a => a.Id).Contains(j.AccountId))
+                .Include(j => j.Account)
+                .OrderBy(j => j.DateAdded)
+                .ToListAsync();
+
+            // If no journal entries exist, show a message
+            if (!journalEntries.Any())
+            {
+                TempData["Message"] = "No journal entries found for the selected date range.";
+                return RedirectToPage();
+            }
+
+            // Calculate balance sheet data by grouping accounts based on their category
+            var balanceSheet = accounts.Select(account => new BalanceSheet
+            {
+                AccountName = account.AccountName,
+                AccountNumber = account.AccountNumber,
+                AccountCategory = account.AccountCategory,
+                Debit = journalEntries.Where(j => j.AccountId == account.Id && j.Debit > 0).Sum(j => j.Debit),
+                Credit = journalEntries.Where(j => j.AccountId == account.Id && j.Credit > 0).Sum(j => j.Credit)
+            }).ToList();
+
+            // Group accounts by category (Assets, Liabilities, Equity)
+            var assets = balanceSheet.Where(b => b.AccountCategory == "Asset").ToList();
+            var liabilitiesAndEquity = balanceSheet.Where(b => b.AccountCategory != "Asset").ToList();
+
+            // Generate the PDF with the balance sheet data
+            string htmlContent = GenerateHtmlForBalanceSheetPdf(assets, liabilitiesAndEquity, StartDate, EndDate);
+
+            var converter = new SynchronizedConverter(new PdfTools());
+            var pdfDocument = new HtmlToPdfDocument
+            {
+                GlobalSettings = new GlobalSettings
+                {
+                    PaperSize = PaperKind.A4,
+                    Orientation = Orientation.Portrait,
+                    Margins = new MarginSettings { Top = 10, Bottom = 10, Left = 10, Right = 10 }
+                }
+            };
+
+            pdfDocument.Objects.Add(new ObjectSettings
+            {
+                HtmlContent = htmlContent,
+                WebSettings = { DefaultEncoding = "utf-8" }
+            });
+
+            var pdfBytes = converter.Convert(pdfDocument);
+
+            return File(pdfBytes, "application/pdf", "BalanceSheet.pdf");
+        }
+
+
+
+
+        private string GenerateHtmlForTrialBalancePdf(List<TrialBalance> trialBalance, DateTime startDate, DateTime endDate)
+        {
+            // Calculate the total debits and credits
+            decimal totalDebits = trialBalance.Sum(item => item.Debit);
+            decimal totalCredits = trialBalance.Sum(item => item.Credit);
+
             var html = $@"
-        <html>
-        <head>
-            <style>
-                body {{ font-family: Arial, sans-serif; }}
-                table {{ width: 100%; border-collapse: collapse; margin-top: 20px; }}
-                th, td {{ border: 1px solid #ddd; padding: 8px; text-align: left; }}
-                th {{ background-color: #f2f2f2; }}
-            </style>
-        </head>
-        <body>
-            <h1>{journalEntries.First().Account.Statement}</h1>
-            <p><strong>Account:</strong> {journalEntries.First().Account.AccountName}</p>
-            <p><strong>Date Range:</strong> {startDate:MM/dd/yyyy} - {endDate:MM/dd/yyyy}</p>
+    <html>
+    <head>
+        <style>
+            body {{ font-family: Arial, sans-serif; }}
+            table {{ width: 100%; border-collapse: collapse; margin-top: 20px; }}
+            th, td {{ border: 1px solid #ddd; padding: 8px; text-align: left; }}
+            th {{ background-color: #f2f2f2; }}
+            .total-row td {{ font-weight: bold; }}
+        </style>
+    </head>
+    <body>
+        <h1>Trial Balance Report</h1>
+        <p><strong>Date Range:</strong> {startDate:MM/dd/yyyy} - {endDate:MM/dd/yyyy}</p>
+        <table>
+            <thead>
+                <tr>
+                    <th>Account Number</th>
+                    <th>Account Name</th>
+                    <th>Debit</th>
+                    <th>Credit</th>
+                </tr>
+            </thead>
+            <tbody>";
+
+            // Populate the table with the trial balance data
+            foreach (var item in trialBalance)
+            {
+                html += $@"
+            <tr>
+                <td>{item.AccountNumber}</td>
+                <td>{item.AccountName}</td>
+                <td>{item.Debit:C}</td>
+                <td>{item.Credit:C}</td>
+            </tr>";
+            }
+
+            // Add a total row at the bottom
+            html += $@"
+            <tr class='total-row'>
+                <td colspan='2'>Total</td>
+                <td>{totalDebits:C}</td>
+                <td>{totalCredits:C}</td>
+            </tr>
+        </tbody>
+    </table>
+</body>
+</html>";
+
+            return html;
+        }
+
+        private string GenerateHtmlForBalanceSheetPdf(List<BalanceSheet> assets, List<BalanceSheet> liabilitiesAndEquity, DateTime startDate, DateTime endDate)
+        {
+            // Calculate totals for assets and liabilities/equity
+            decimal totalAssets = assets.Sum(item => item.Debit - item.Credit);
+            decimal totalLiabilitiesAndEquity = liabilitiesAndEquity.Sum(item => item.Debit - item.Credit);
+
+            var html = $@"
+    <html>
+    <head>
+        <style>
+            body {{ font-family: Arial, sans-serif; }}
+            table {{ width: 48%; border-collapse: collapse; float: left; margin-right: 2%; }}
+            th, td {{ border: 1px solid #ddd; padding: 8px; text-align: left; }}
+            th {{ background-color: #f2f2f2; }}
+            .total-row td {{ font-weight: bold; }}
+            .balance-sheet-section {{ margin-top: 20px; }}
+            .section-title {{ font-size: 16px; font-weight: bold; }}
+            .clear {{ clear: both; }}
+        </style>
+    </head>
+    <body>
+        <h1>Balance Sheet Report</h1>
+        <p><strong>Date Range:</strong> {startDate:MM/dd/yyyy} - {endDate:MM/dd/yyyy}</p>
+
+        <!-- Liabilities and Equity Section -->
+        <div class='balance-sheet-section'>
+            <div class='section-title'>Liabilities & Equity</div>
             <table>
                 <thead>
                     <tr>
-                        <th>Date</th>
-                        <th>Account</th>
+                        <th>Account Number</th>
+                        <th>Account Name</th>
                         <th>Debit</th>
                         <th>Credit</th>
-                        <th>Description</th>
                     </tr>
                 </thead>
                 <tbody>";
 
-            foreach (var entry in journalEntries)
+            // Add rows for Liabilities & Equity
+            foreach (var item in liabilitiesAndEquity)
             {
                 html += $@"
-                    <tr>
-                        <td>{entry.DateAdded:MM/dd/yyyy}</td>
-                        <td>{entry.Account.AccountName}</td>
-                        <td>{entry.Debit:C}</td>
-                        <td>{entry.Credit:C}</td>
-                        <td>{entry.Description}</td>
-                    </tr>";
+            <tr>
+                <td>{item.AccountNumber}</td>
+                <td>{item.AccountName}</td>
+                <td>{item.Debit:C}</td>
+                <td>{item.Credit:C}</td>
+            </tr>";
             }
 
-            html += @"
-                </tbody>
-            </table>
-        </body>
-        </html>";
+            html += $@"
+            <tr class='total-row'>
+                <td colspan='2'>Total Liabilities & Equity</td>
+                <td>{totalLiabilitiesAndEquity:C}</td>
+                <td></td>
+            </tr>
+        </tbody>
+    </table>
+</div>
+
+<!-- Clear floats between sections -->
+<div class='clear'></div>
+
+<!-- Assets Section -->
+<div class='balance-sheet-section'>
+    <div class='section-title'>Assets</div>
+    <table>
+        <thead>
+            <tr>
+                <th>Account Number</th>
+                <th>Account Name</th>
+                <th>Debit</th>
+                <th>Credit</th>
+            </tr>
+        </thead>
+        <tbody>";
+
+            // Add rows for Assets
+            foreach (var item in assets)
+            {
+                html += $@"
+            <tr>
+                <td>{item.AccountNumber}</td>
+                <td>{item.AccountName}</td>
+                <td>{item.Debit:C}</td>
+                <td>{item.Credit:C}</td>
+            </tr>";
+            }
+
+            html += $@"
+            <tr class='total-row'>
+                <td colspan='2'>Total Assets</td>
+                <td>{totalAssets:C}</td>
+                <td></td>
+            </tr>
+        </tbody>
+    </table>
+</div>
+
+</body>
+</html>";
 
             return html;
         }
+
 
     }
 }

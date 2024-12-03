@@ -99,6 +99,49 @@
     }
 </form>
 
+<!--Generate reports-->
+<form method="post" asp-page-handler="PrintTrialBalance"> 
+    <input type="hidden" name="SelectedCompanyId" value="@Model.SelectedCompanyId" >
+    <label for="StartDate">Start Date:</label>
+    <input type="date" id="StartDate" name="StartDate" required />
+
+    <label for="EndDate">End Date:</label>
+    <input type="date" id="EndDate" name="EndDate" required />
+
+    <button type="submit">Generate Trial Balance PDF</button>
+</form>
+<form method="post" asp-page-handler="PrintBalanceSheet">
+    <input type="hidden" name="SelectedCompanyId" value="@Model.SelectedCompanyId">
+    <label for="StartDate">Start Date:</label>
+    <input type="date" id="StartDate" name="StartDate" required />
+
+    <label for="EndDate">End Date:</label>
+    <input type="date" id="EndDate" name="EndDate" required />
+
+    <button type="submit">Generate Balance Sheet</button>
+</form>
+<form method="post" asp-page-handler="PrintIncomeStatement">
+    <input type="hidden" name="SelectedCompanyId" value="@Model.SelectedCompanyId">
+    <label for="StartDate">Start Date:</label>
+    <input type="date" id="StartDate" name="StartDate" required />
+
+    <label for="EndDate">End Date:</label>
+    <input type="date" id="EndDate" name="EndDate" required />
+
+    <button type="submit">Generate Income Statement</button>
+</form>
+<form method="post" asp-page-handler="PrintRetainedEarningsStatement">
+    <input type="hidden" name="SelectedCompanyId" value="@Model.SelectedCompanyId">
+    <label for="StartDate">Start Date:</label>
+    <input type="date" id="StartDate" name="StartDate" required />
+
+    <label for="EndDate">End Date:</label>
+    <input type="date" id="EndDate" name="EndDate" required />
+
+    <button type="submit">Generate Retained Earnings Statement</button>
+</form>
+
+
 <br />
 
 @if (Model.SelectedCompanyId.HasValue && Model.SelectedCompanyAccounts.Count > 0)
