@@ -51,6 +51,7 @@ namespace eCoinAccountingApp.Pages.Account
         {
             ModelState.Remove("Account.UserId");
             ModelState.Remove("Account.Company");
+            ModelState.Remove("Account.Journals");
 
             if (!ModelState.IsValid)
             {
