@@ -2,12 +2,48 @@
 @model IndexModel
 @{
     ViewData["Title"] = "Home page";
+
+    // Determine the color dynamically based on the ratio values
+    string GetColorForCurrentRatio(decimal ratio) => ratio switch
+    {
+        >= 1.5m and <= 3.0m => "green",
+        >= 1.0m and < 1.5m => "yellow",
+        _ => "red"
+    };
+
+    string GetColorForDebtRatio(decimal ratio) => ratio switch
+    {
+        >= 0.3m and <= 0.6m => "green",
+        > 0.6m and <= 0.8m => "yellow",
+        _ => "red"
+    };
+
+    var currentRatioColor = GetColorForCurrentRatio(Model.CurrentRatio);
+    var debtRatioColor = GetColorForDebtRatio(Model.DebtRatio);
 }
 
 <body style="text-align: center;">
     <!-- Welcome Heading -->
     <h1 style="text-align: center;">Welcome To Ecoin Accountant!</h1>
 
-    <!-- Background Image -->
-    <img src="./accountantBackgroundPic.jpg" alt="accountantBackgroundPic" style="width: 100%; height: 100%; top: 0; left: 0; z-index: -1; object-fit: cover;" />
+    <!-- Square Panels -->
+    <div style="display: flex; justify-content: center; margin-top: 20px; gap: 20px;">
+
+        <!-- Current Ratio Panel -->
+        <div style="text-align: center;">
+            <p style="font-size: 18px; margin-bottom: 10px; font-weight: bold;">Current Ratio</p>
+            <div style="width: 200px; height: 200px; background-color: white; border-radius: 10px; display: flex; justify-content: center; align-items: center;">
+                <p style="font-size: 36px; font-weight: bold; margin: 0; color: @currentRatioColor;">@Model.CurrentRatio</p>
+            </div>
+        </div>
+
+        <!-- Debt Ratio Panel -->
+        <div style="text-align: center;">
+            <p style="font-size: 18px; margin-bottom: 10px; font-weight: bold;">Debt Ratio</p>
+            <div style="width: 200px; height: 200px; background-color: white; border-radius: 10px; display: flex; justify-content: center; align-items: center;">
+                <p style="font-size: 36px; font-weight: bold; margin: 0; color: @debtRatioColor;">@Model.DebtRatio</p>
+            </div>
+        </div>
+
+    </div>
 </body>
